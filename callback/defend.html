@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Call Back · Call back</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Courier+Prime:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="cb.css">
+<style>
+.decide{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:860px){.decide{grid-template-columns:minmax(0,1fr)}}
+.choices{display:flex;flex-direction:column;gap:10px}
+.choice{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start}
+.choice .k{font-family:var(--display);font-size:18px;color:var(--muted);line-height:1.2}
+.choice:hover{border-color:#3a4757}
+.choice[aria-pressed="true"]{border-color:var(--amber)}
+.result{border-radius:12px;padding:16px;display:none;flex-direction:column;gap:6px;border:1px solid}
+.result.show{display:flex}
+.result.bad{border-color:var(--alarm);background:#21161a}
+.result.meh{border-color:var(--amber);background:#221b0e}
+.result.good{border-color:var(--ok);background:#11221f}
+.result .h{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.result.bad .h{color:var(--alarm)} .result.meh .h{color:var(--amber)} .result.good .h{color:var(--ok)}
+.tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:860px){.tools{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.tools{grid-template-columns:minmax(0,1fr)}}
+.tool{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:8px}
+.tool .n{font-family:var(--mono);font-size:12px;color:var(--amber);letter-spacing:.1em}
+.tool b{font-size:19px;line-height:1.25}
+.tool span{color:var(--muted);font-size:15px}
+.tool.main{border-color:var(--amber);grid-column:span 2;background:linear-gradient(135deg,#221b0e,var(--panel))}
+@media (max-width:520px){.tool.main{grid-column:auto}}
+.tools .tool:last-child{grid-column:1/-1}
+.tool.main b{font-family:var(--display);font-weight:400;font-size:clamp(22px,3vw,30px)}
+.script{background:#f3efe4;color:#1c1a16;border-radius:10px;padding:18px 20px;font-family:var(--mono);font-size:17px;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.script small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#7a705c;margin-bottom:6px}
+.say{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:center}
+@media (max-width:760px){.say{grid-template-columns:minmax(0,1fr)}}
+.foot{display:flex;flex-direction:column;gap:6px}
+.foot li{margin:4px 0}
+.call{background:var(--panel);border:1px solid var(--amber);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:12px}
+.hotline{font-family:var(--mono);font-size:20px;color:var(--amber)}
+</style>
+</head><body>
+<div class="wrap">
+  <nav class="chap"><a href="index.html"><b>1</b>The mask</a><a href="sources.html"><b>2</b>The ingredients</a><a href="play.html"><b>3</b>The play</a><a href="tells.html"><b>4</b>The tells</a><a href="defend.html" aria-current="page"><b>5</b>Call back</a></nav>
+  <header>
+    <div class="kicker">Chapter 5 · Call back</div>
+    <h1>Hang up. Call back.</h1>
+    <p class="lead">The title of the video was the lesson all along. A deepfake controls the call it starts. It can't control the call you start.</p>
+  </header>
+
+  <section class="decide">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="callframe"><img src="img/exec.jpg" alt="The Exec on a video call"><div class="callbar"><span class="who"><span class="dot"></span>The Exec · Video call</span><span>04:12</span></div></div>
+      <p class="lead"><b>Your turn.</b> The Exec is on video. He needs a supplier's bank details changed before end of day, and he'd rather you didn't mention it to anyone. What do you do?</p>
+    </div>
+    <div class="choices" aria-live="polite">
+      <button class="choice" data-c="bad"><span class="k">A</span><span>Do it. It's literally his face, and he's the Exec.</span></button>
+      <button class="choice" data-c="meh"><span class="k">B</span><span>Ask him something only the real Exec would know.</span></button>
+      <button class="choice" data-c="good"><span class="k">C</span><span>Say you'll call right back. Hang up, and dial his number from the company directory.</span></button>
+      <div class="result bad" id="r-bad"><span class="h">That's the $25 million answer</span><p>Changed bank details are one of the most common ways company money disappears. The next real invoice gets paid straight to Ryan, and nobody notices for weeks. The face was the only evidence you had, and the face is the one thing a deepfake gets right.</p></div>
+      <div class="result meh" id="r-meh"><span class="h">Good instinct. Not enough on its own.</span><p>A question saved Ferrari. But you're still on the caller's line, and a well-researched scammer may know the answer, or say "I can't talk about that now" and push harder. Use the question as a warning light, then do C anyway.</p></div>
+      <div class="result good" id="r-good"><span class="h">That's the move</span><p>If it's really him, you've cost him two minutes and he'll likely respect it. If it's not, the scam is over: Ryan can't answer a phone he doesn't own. Then report it, even if it turns out to be nothing.</p></div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:14px">
+    <div><div class="kicker cold">Your toolkit</div><h2>Six habits that beat a perfect fake.</h2></div>
+    <div class="tools">
+      <div class="tool main"><span class="n">01 · THE BIG ONE</span><b>Call back on a number you look up yourself.</b><span>Use the company directory, the number saved in your phone from before, or walk over to their desk. Never the number, link or meeting invite in the message that made the request.</span></div>
+      <div class="tool"><span class="n">02</span><b>Agree on a code word.</b><span>For teams that move money or grant access, pick a word or question that's never written in email or chat. Do it at home too: voice-clone "family emergency" calls are common.</span></div>
+      <div class="tool"><span class="n">03</span><b>Two people for money and access.</b><span>Payments, bank-detail changes and password resets get a second person to approve. "Urgent" doesn't get an exception. Urgent is the reason the rule exists.</span></div>
+      <div class="tool"><span class="n">04</span><b>Keep it in the normal channel.</b><span>Real requests come through the usual systems. A boss on WhatsApp, a personal email or a new number is the LastPass lesson: that's enough reason to stop.</span></div>
+      <div class="tool"><span class="n">05</span><b>Slow down on purpose.</b><span>Pressure is the weapon. Any real leader will wait five minutes. If they won't, you've learned something.</span></div>
+      <div class="tool"><span class="n">06</span><b>Report it, even after the fact.</b><span>Already clicked, sent or paid? Report it right away. A wire caught in the first hours can sometimes be pulled back. A wire reported next week can't.</span></div>
+    </div>
+  </section>
+
+  <section class="say">
+    <div class="script"><small>What to say. Copy it.</small>"Happy to help. Our policy is that I call you back on your directory number before I act on this. Talk in two minutes."</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <h2>Verification isn't rude. It's the job.</h2>
+      <p class="muted">No executive has ever been fired for being verified. Several have been very glad of it. If a leader gets annoyed that you followed the process, that's a conversation for them and the security team, not a reason to skip it.</p>
+    </div>
+  </section>
+
+  <section class="grid2">
+    <div class="panel foot">
+      <div class="kicker cold">Shrink your own footprint</div>
+      <ul>
+        <li>Use the default voicemail greeting, not your voice.</li>
+        <li>Keep out-of-office replies to outsiders short: no dates, no itinerary, no backup contact.</li>
+        <li>Post trips after you're home. Lock personal accounts to friends.</li>
+        <li>On professional profiles, share your role, not your reporting chain, systems or start date.</li>
+      </ul>
+    </div>
+    <div class="call">
+      <div class="kicker">Something feel off? Report it.</div>
+      <p class="lead">Nobody gets in trouble for a false alarm. The security team would rather check ten of them than miss the real one.</p>
+      <div class="hotline">Security hotline: [number goes here]</div>
+    </div>
+  </section>
+
+  <p class="big">Trust the process, not the face.</p>
+  <div class="next"><a href="tells.html">◀ The tells</a><a href="index.html">Back to the start ↺</a></div>
+</div>
+<script>
+document.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',x===b));
+  document.querySelectorAll('.result').forEach(r=>r.classList.remove('show'));
+  document.getElementById('r-'+b.dataset.c).classList.add('show');
+}));
+</script>
+</body></html>

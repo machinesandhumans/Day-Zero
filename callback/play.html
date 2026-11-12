@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Call Back · The play</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Courier+Prime:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="cb.css">
+<style>
+.playgrid{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:860px){.playgrid{grid-template-columns:minmax(0,1fr)}}
+.phone{background:#0a0d11;border:1px solid var(--line);border-radius:28px;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:560px}
+.phone .top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--muted);padding:2px 8px}
+.feed{display:flex;flex-direction:column;gap:10px;padding:4px}
+.ev{display:none;flex-direction:column;gap:4px;animation:in .35s ease-out}
+.ev.on{display:flex}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.ev .ts{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:center}
+.bub{background:#25303d;border-radius:16px 16px 16px 4px;padding:10px 12px;max-width:88%;font-size:15px;line-height:1.4}
+.bub.from{font-size:12px;color:var(--muted);background:none;padding:0 4px}
+.ev .callframe{border-radius:12px}
+.ev.end .bub{background:#3a1512;border:1px solid var(--alarm)}
+.ev.cur .bub{box-shadow:0 0 0 2px var(--amber)}
+.side{display:flex;flex-direction:column;gap:16px;min-width:0;position:sticky;top:12px}
+@media (max-width:860px){.side{position:static}}
+.levers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+@media (max-width:560px){.levers{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.lever{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 8px;text-align:center;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);transition:all .3s}
+.lever .ic{display:block;font-size:22px;margin-bottom:4px;filter:grayscale(1);opacity:.5;transition:all .3s}
+.lever.lit{border-color:var(--alarm);color:var(--fg);background:#2a1614}
+.lever.lit .ic{filter:none;opacity:1}
+.explain{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:8px;min-height:170px}
+.explain .lv{font-family:var(--mono);font-size:13px;color:var(--alarm);letter-spacing:.1em;text-transform:uppercase}
+.explain h3{margin:0;font-size:22px;line-height:1.3}
+.explain p{color:var(--muted)}
+.wants{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:860px){.wants{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.wants{grid-template-columns:minmax(0,1fr)}}
+.want{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.want .ic{font-size:28px}
+.want b{font-size:18px}
+.want span{color:var(--muted);font-size:14px}
+.cases{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:980px){.cases{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.cases{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head><body>
+<div class="wrap">
+  <nav class="chap"><a href="index.html"><b>1</b>The mask</a><a href="sources.html"><b>2</b>The ingredients</a><a href="play.html" aria-current="page"><b>3</b>The play</a><a href="tells.html"><b>4</b>The tells</a><a href="defend.html"><b>5</b>Call back</a></nav>
+  <header>
+    <div class="kicker">Chapter 3 · The play</div>
+    <h1>The face gets him in the room. The script does the rest.</h1>
+    <p class="lead">Here's how Ryan works Jordan, the new hire in Accounts Payable. Every deepfake scam pulls the same five levers. Step through it and watch them light up.</p>
+  </header>
+
+  <section class="playgrid">
+    <div class="phone" aria-live="polite">
+      <div class="top"><span>Jordan's phone</span><span>Monday</span></div>
+      <div class="feed" id="feed">
+        <div class="ev"><div class="ts">8:52 AM · unknown number</div><div class="bub">Jordan, it's the Exec. New phone, save this number. Are you at your desk? Need help with something confidential.</div></div>
+        <div class="ev"><div class="ts">8:55 AM</div><div class="bub">Legal says keep this off Teams and email until the deal is announced. Jumping on a quick video call.</div></div>
+        <div class="ev"><div class="ts">9:01 AM · video call</div><div class="callframe"><img src="img/exec.jpg" alt="The Exec on a video call"><div class="callbar"><span class="who"><span class="dot"></span>The Exec</span><span>poor connection</span></div></div><div class="bub from">"Sorry, airport wifi. I'm boarding in twenty minutes."</div></div>
+        <div class="ev"><div class="ts">9:04 AM</div><div class="bub">Wire $480,000 to the escrow account in the PDF I just sent. It has to land before 10 or we lose the deal.</div></div>
+        <div class="ev"><div class="ts">9:06 AM</div><div class="bub">You're the only one I trust with this. Don't loop in your manager yet, I'll explain everything to her tonight.</div></div>
+        <div class="ev end"><div class="ts">9:41 AM</div><div class="bub">Wire sent. By 9:50 the money has hopped through three accounts in three countries. At 11:15 the real Exec calls back from a dentist's chair, very confused.</div></div>
+      </div>
+    </div>
+    <div class="side">
+      <div class="levers" id="levers">
+        <div class="lever" data-l="channel"><span class="ic">📱</span>New channel</div>
+        <div class="lever" data-l="secrecy"><span class="ic">🤫</span>Secrecy</div>
+        <div class="lever" data-l="authority"><span class="ic">👔</span>Authority</div>
+        <div class="lever" data-l="urgency"><span class="ic">⏱️</span>Urgency</div>
+        <div class="lever" data-l="isolation"><span class="ic">🧍</span>Isolation</div>
+      </div>
+      <div class="explain" id="explain">
+        <div class="lv">Ready</div>
+        <h3>Ryan has his file. Jordan has a coffee.</h3>
+        <p>Press "Next message" to play the morning.</p>
+      </div>
+      <div class="row"><button class="btn" id="next">Next message →</button><button class="btn ghost" id="reset">Start over</button><span class="small" id="cnt">0 / 6</span></div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:14px">
+    <div><div class="kicker cold">What they're after</div><h2>It's rarely about the video. It's about the ask.</h2></div>
+    <div class="wants">
+      <div class="want"><span class="ic">💸</span><b>Money</b><span>A wire, an "urgent" invoice, new bank details for a supplier, a stack of gift cards.</span></div>
+      <div class="want"><span class="ic">🔑</span><b>Passwords and codes</b><span>"Read me the code that just came to your phone." "Approve the sign-in prompt so I can get in."</span></div>
+      <div class="want"><span class="ic">🚪</span><b>Access</b><span>Reset a login, add a new phone to someone's account, install a "screen sharing" tool.</span></div>
+      <div class="want"><span class="ic">📁</span><b>Data</b><span>Customer and patient lists, product designs, payroll and tax forms.</span></div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:14px">
+    <div><div class="kicker">This happened</div><h2>Four real companies. One paid.</h2><p class="muted">The difference was never better eyesight. Someone checked.</p></div>
+    <div class="cases">
+      <div class="panel case"><span class="yr">Arup · Hong Kong · 2024</span><b>A whole meeting of fakes.</b><p>A finance employee joined a video call with the "CFO" and several "colleagues." Every one of them was a deepfake. Fifteen transfers followed.</p><span class="out lost">Lost about $25.6M</span><a href="https://fortune.com/europe/2024/05/17/arup-deepfake-fraud-scam-victim-hong-kong-25-million-cfo/" target="_blank" rel="noopener">Fortune ↗</a></div>
+      <div class="panel case"><span class="yr">Ferrari · Italy · 2024</span><b>One question.</b><p>An executive got WhatsApp messages and a call in the CEO's cloned voice about a secret deal. He asked what book the CEO had recommended to him days earlier. The line went dead.</p><span class="out saved">Stopped</span><a href="https://fortune.com/2024/07/27/ferrari-deepfake-attempt-scammer-security-question-ceo-benedetto-vigna-cybersecurity-ai/" target="_blank" rel="noopener">Fortune ↗</a></div>
+      <div class="panel case"><span class="yr">WPP · UK · 2024</span><b>A fake CEO in a Teams meeting.</b><p>Scammers set up a meeting using a cloned voice and YouTube footage of the CEO to ask a senior leader to start a new business and hand over money and details.</p><span class="out saved">Stopped</span><a href="https://www.marketing-beat.co.uk/2024/05/13/mark-read-deepfake-wpp-ai/" target="_blank" rel="noopener">Marketing Beat ↗</a></div>
+      <div class="panel case"><span class="yr">LastPass · US · 2024</span><b>Wrong channel.</b><p>An employee got calls, texts and a voicemail in the CEO's deepfaked voice on WhatsApp. The employee ignored them because the CEO doesn't use WhatsApp for work, and reported it.</p><span class="out saved">Stopped</span><a href="https://blog.lastpass.com/posts/attempted-audio-deepfake-call-targets-lastpass-employee" target="_blank" rel="noopener">LastPass ↗</a></div>
+    </div>
+  </section>
+
+  <div class="next"><a href="sources.html">◀ The ingredients</a><a href="tells.html">The tells ▶</a></div>
+</div>
+<script>
+const STEPS=[
+ {l:['channel'],lv:'New channel',h:'"New phone, save this number."',p:'Step one is always to move you off the systems that could check who he is. A new number, a personal app, a private email. Real executives get new phones too, which is exactly why it works.'},
+ {l:['secrecy'],lv:'Secrecy',h:'"Keep this off Teams and email."',p:'Secrecy cuts you off from everyone who might say "that\'s weird." A confidential deal is the classic cover story. It also explains why nothing about it exists anywhere else.'},
+ {l:['authority'],lv:'Authority',h:'Now there\'s a face. His face.',p:'The video is the closer, not the opener. Seeing the boss shuts down doubt. "Airport wifi" quietly explains any glitches and sets a clock.'},
+ {l:['urgency'],lv:'Urgency',h:'"Before 10, or we lose the deal."',p:'A deadline leaves no time to think, check, or ask. Real deadlines exist. Real deadlines also survive a five-minute phone call to verify.'},
+ {l:['isolation'],lv:'Isolation',h:'"Don\'t loop in your manager."',p:'Flattery plus isolation. You feel trusted, and the one person who could stop this is now off-limits. That line alone should end the call.'},
+ {l:[],lv:'Outcome',h:'Five levers. Five minutes. Gone.',p:'None of the five levers needed a deepfake. The fake face just made each one easier to believe. Take any one lever away, with one call back to a number you already have, and the whole play falls apart.'}
+];
+let i=0;const evs=[...document.querySelectorAll('.ev')],ex=document.getElementById('explain'),lv=[...document.querySelectorAll('.lever')];
+function step(){if(i>=STEPS.length)return;const s=STEPS[i];evs.forEach(e=>e.classList.remove('cur'));evs[i].classList.add('on','cur');
+  s.l.forEach(k=>document.querySelector(`.lever[data-l="${k}"]`).classList.add('lit'));
+  ex.innerHTML=`<div class="lv">${s.lv}</div><h3>${s.h}</h3><p>${s.p}</p>`;i++;
+  document.getElementById('cnt').textContent=i+' / 6';
+  if(i===STEPS.length){document.getElementById('next').disabled=true}
+  evs[i-1].scrollIntoView({block:'nearest',behavior:'smooth'})}
+document.getElementById('next').addEventListener('click',step);
+document.getElementById('reset').addEventListener('click',()=>{i=0;evs.forEach(e=>e.classList.remove('on','cur'));lv.forEach(l=>l.classList.remove('lit'));document.getElementById('next').disabled=false;document.getElementById('cnt').textContent='0 / 6';ex.innerHTML='<div class="lv">Ready</div><h3>Ryan has his file. Jordan has a coffee.</h3><p>Press "Next message" to play the morning.</p>'});
+</script>
+</body></html>
