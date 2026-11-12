@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Call Back · The tells</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Courier+Prime:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="cb.css">
+<style>
+.game{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:22px;align-items:start}
+@media (max-width:860px){.game{grid-template-columns:minmax(0,1fr)}}
+.lines{display:flex;flex-direction:column;gap:8px}
+.line{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;transition:border-color .2s,background .2s}
+.line .flag{width:26px;height:26px;border-radius:6px;border:2px solid #3a4757;display:grid;place-items:center;font-size:14px;color:transparent;margin-top:1px}
+.line .q{font-size:16px}
+.line .why{display:none;grid-column:2;font-size:14px;color:var(--muted);border-top:1px solid var(--line);padding-top:8px;margin-top:2px}
+.line[aria-pressed="true"]{border-color:var(--amber)}
+.line[aria-pressed="true"] .flag{border-color:var(--amber);background:var(--amber);color:#1b1305}
+.done .line .why{display:block}
+.done .line.red{border-color:var(--alarm);background:#21161a}
+.done .line.red .why b{color:var(--alarm)}
+.done .line.ok .why b{color:var(--ok)}
+.done .line.miss .flag{border-color:var(--alarm);color:var(--alarm)}
+.score{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px;position:sticky;top:12px}
+@media (max-width:860px){.score{position:static}}
+.score .v{font-family:var(--display);font-size:40px;line-height:1;color:var(--amber)}
+.pixels{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:860px){.pixels{grid-template-columns:minmax(0,1fr)}}
+.tests{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.tests{grid-template-columns:minmax(0,1fr)}}
+.test{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.test img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block}
+.test div{padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.test b{font-size:15px}
+.test span{font-size:13px;color:var(--muted)}
+.warn{border:1px solid var(--amber);background:#221b0e;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.warn b{color:var(--amber);font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;font-size:13px}
+</style>
+</head><body>
+<div class="wrap">
+  <nav class="chap"><a href="index.html"><b>1</b>The mask</a><a href="sources.html"><b>2</b>The ingredients</a><a href="play.html"><b>3</b>The play</a><a href="tells.html" aria-current="page"><b>4</b>The tells</a><a href="defend.html"><b>5</b>Call back</a></nav>
+  <header>
+    <div class="kicker">Chapter 4 · The tells</div>
+    <h1>Listen to the ask, not the face.</h1>
+    <p class="lead">You won't win a staring contest with a computer. You will win by noticing what the call is trying to get you to do. Here's the Exec's call to Jordan, line by line. Flag every line that should make you stop.</p>
+  </header>
+
+  <section class="game">
+    <div class="lines" id="lines"></div>
+    <aside class="score" aria-live="polite">
+      <div class="kicker cold">Your flags</div>
+      <div class="v" id="sv">0</div>
+      <p class="muted" id="st">Tap a line to flag it. Tap again to unflag.</p>
+      <div class="row"><button class="btn" id="check">Check my flags</button><button class="btn ghost" id="again" hidden>Try again</button></div>
+    </aside>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:14px">
+    <div><div class="kicker cold">The pixels</div><h2>Fakes slip when something crosses the face.</h2>
+    <p class="muted">Remember Ryan's noodles? Watch the mask struggle with chopsticks, then lose the plot entirely.</p></div>
+    <div class="pixels">
+      <div class="callframe"><video src="clips/swap.mp4" autoplay muted loop playsinline aria-label="Clip from Call Back: Ryan eats noodles and the face swap to the Exec catches up"></video><span class="tag" style="left:10px">From Call Back</span><div class="callbar"><span class="who"><span class="dot"></span>The Exec · Video call</span><span>muted</span></div></div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <p>If something seems off and you're <em>still</em> on the call, you can stress-test the picture. Ask them to:</p>
+        <div class="tests">
+          <div class="test"><img src="img/exec-turn.jpg" alt="The Exec turning his head sideways"><div><b>Turn sideways</b><span>Profiles are hard. Ears, jawlines and glasses warp.</span></div></div>
+          <div class="test"><img src="img/noodle-exec.jpg" alt="The Exec eating noodles"><div><b>Pass a hand in front</b><span>Hands, food and mugs crossing the face cause smears.</span></div></div>
+          <div class="test"><img src="img/glitch.jpg" alt="Video glitch revealing Ryan under the Exec"><div><b>Watch the edges</b><span>Hairline, collar and lip-sync flicker or lag.</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="warn"><b>Don't bet on it</b><p>Every one of these tells is shrinking with each software update. Many deepfake calls are also audio-only, or come with a "camera's broken" excuse. A clean picture proves nothing. A suspicious request is the only tell you can count on.</p></div>
+  </section>
+
+  <div class="next"><a href="play.html">◀ The play</a><a href="defend.html">Call back ▶</a></div>
+</div>
+<script>
+const L=[
+ {q:'"Morning! Hope the new role\'s treating you well."',red:false,why:'Just small talk. A real boss says this. So does a good scammer: warm and normal comes first.'},
+ {q:'"I\'m on my personal phone, my work laptop\'s locked up."',red:true,why:'New channel. Moving you off company systems removes the ways you\'d normally confirm who\'s calling.'},
+ {q:'"We\'re closing an acquisition. It\'s confidential until Friday."',red:true,why:'Secrecy. Confidential deals are real, but they still go through normal approvals. "Secret" is a reason to follow the process, not skip it.'},
+ {q:'"Finance usually handles this, but I need you to do it personally."',red:true,why:'Skipping the normal process. When someone asks you to step around the usual path, the path is usually the thing that would catch them.'},
+ {q:'"Can you get the payment out by 10? They walk if it\'s late."',red:true,why:'Urgency. A deadline is designed to stop you from checking. Real deadlines survive a five-minute callback.'},
+ {q:'"Thanks for jumping on this, I really appreciate it."',red:false,why:'Normal. Politeness isn\'t a warning sign by itself.'},
+ {q:'"Don\'t mention it to anyone yet, including your manager."',red:true,why:'Isolation. Cutting out your manager cuts out the person most likely to say "wait, what?"'},
+ {q:'"No time to call me back, I\'m about to board."',red:true,why:'Refusing verification. This is the biggest flag of all. A real boss can wait five minutes. A fake one can\'t afford to.'}
+];
+const box=document.getElementById('lines'),wrap=document.querySelector('.game');
+L.forEach((l,i)=>{const b=document.createElement('button');b.className='line';b.setAttribute('aria-pressed','false');
+  b.innerHTML=`<span class="flag" aria-hidden="true">⚑</span><span class="q">${l.q}</span><span class="why"></span>`;
+  b.addEventListener('click',()=>{if(wrap.classList.contains('done'))return;b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true');count()});box.appendChild(b)});
+function count(){document.getElementById('sv').textContent=box.querySelectorAll('[aria-pressed="true"]').length}
+document.getElementById('check').addEventListener('click',()=>{let hit=0,fa=0;
+  [...box.children].forEach((b,i)=>{const on=b.getAttribute('aria-pressed')==='true',l=L[i];
+    b.classList.add(l.red?'red':'ok');if(l.red&&!on)b.classList.add('miss');if(l.red&&on)hit++;if(!l.red&&on)fa++;
+    b.querySelector('.why').innerHTML=`<b>${l.red?(on?'Red flag. Caught it.':'Red flag. Missed.'):(on?'Actually fine.':'Fine.')}</b> ${l.why}`});
+  wrap.classList.add('done');document.getElementById('sv').textContent=hit+' / 6';
+  document.getElementById('st').textContent=hit===6&&!fa?'All six. Ryan would hang up on you.':hit>=4?'Good instincts. Read the ones you missed: the last one matters most.':'Ryan\'s favorite kind of call. Read the notes; they\'re short.';
+  document.getElementById('check').hidden=true;document.getElementById('again').hidden=false});
+document.getElementById('again').addEventListener('click',()=>{wrap.classList.remove('done');[...box.children].forEach(b=>{b.className='line';b.setAttribute('aria-pressed','false')});count();document.getElementById('st').textContent='Tap a line to flag it. Tap again to unflag.';document.getElementById('check').hidden=false;document.getElementById('again').hidden=true});
+</script>
+</body></html>

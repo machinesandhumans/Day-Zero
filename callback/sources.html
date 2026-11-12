@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Call Back · The ingredients</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Courier+Prime:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="cb.css">
+<style>
+.board{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:860px){.board{grid-template-columns:minmax(0,1fr)}}
+.dossier{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:14px;position:sticky;top:12px}
+@media (max-width:860px){.dossier{position:static}}
+.dossier .head{display:flex;gap:12px;align-items:center}
+.dossier .head img{width:72px;height:72px;border-radius:8px;object-fit:cover;filter:grayscale(1) contrast(1.1)}
+.dossier .head .stamp{font-family:var(--mono);font-size:12px;color:var(--alarm);border:2px solid var(--alarm);padding:2px 6px;transform:rotate(-4deg);display:inline-block;letter-spacing:.1em}
+.dossier .head .nm{font-family:var(--display);font-size:18px}
+.meter{display:flex;flex-direction:column;gap:4px}
+.meter .k{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.meter .k b{color:var(--fg);font-weight:400}
+.meter .track{height:12px;border-radius:6px;background:var(--panel2);border:1px solid var(--line);overflow:hidden}
+.meter .fill{height:100%;width:0;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.m-face .fill{background:var(--alarm)} .m-voice .fill{background:var(--cold)} .m-ctx .fill{background:var(--amber)} .m-time .fill{background:var(--ok)}
+.verdict{font-family:var(--mono);font-size:14px;border-top:1px solid var(--line);padding-top:10px;min-height:44px}
+.verdict.ready{color:var(--alarm)}
+.srcs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.srcs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.src{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:6px;min-height:120px;position:relative;transition:border-color .2s,background .2s}
+.src:hover{border-color:#3a4757}
+.src .ic{font-size:24px;line-height:1}
+.src .nm{font-weight:600;font-size:15px;line-height:1.25}
+.src .yield{display:flex;gap:4px;flex-wrap:wrap;margin-top:auto}
+.src .yield span{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;padding:1px 6px;border-radius:3px;background:var(--panel2);color:var(--muted)}
+.src.got{border-color:var(--alarm);background:#21161a}
+.src.got::after{content:"COLLECTED";position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:10px;color:var(--alarm);letter-spacing:.1em}
+.src[aria-pressed="true"].sel{outline:2px solid var(--amber)}
+.detail{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin-top:12px}
+@media (max-width:640px){.detail{grid-template-columns:minmax(0,1fr)}}
+.detail .lab{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.detail .lab.a{color:var(--alarm)} .detail .lab.d{color:var(--ok)}
+.detail p{font-size:15px}
+.you{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:center}
+@media (max-width:760px){.you{grid-template-columns:minmax(0,1fr)}}
+.linkedin{background:#f4f2ee;color:#1d2226;border-radius:10px;padding:16px;font-family:var(--body);display:flex;flex-direction:column;gap:6px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.linkedin .nm{font-weight:600;font-size:18px}
+.linkedin .ti{font-size:14px;color:#555}
+.linkedin .post{border-top:1px solid #ddd;padding-top:8px;font-size:14px}
+.linkedin mark{background:#ffd5d1;color:#7a1a12;padding:0 2px;border-radius:2px}
+.linkedin .note{font-family:var(--mono);font-size:11px;color:#b3261e}
+</style>
+</head><body>
+<div class="wrap">
+  <nav class="chap"><a href="index.html"><b>1</b>The mask</a><a href="sources.html" aria-current="page"><b>2</b>The ingredients</a><a href="play.html"><b>3</b>The play</a><a href="tells.html"><b>4</b>The tells</a><a href="defend.html"><b>5</b>Call back</a></nav>
+  <header>
+    <div class="kicker">Chapter 2 · The ingredients</div>
+    <h1>He didn't hack anything. He shopped.</h1>
+    <p class="lead">A deepfake needs four things: the face, the voice, enough context to sound like an insider, and good timing. Click each place Ryan looked and watch the Exec's file fill up.</p>
+  </header>
+
+  <section class="board">
+    <aside class="dossier" aria-live="polite">
+      <div class="head"><img src="img/face-exec.jpg" alt=""><div><div class="nm">THE EXEC</div><span class="stamp">TARGET FILE</span></div></div>
+      <div class="meter m-face"><div class="k"><span>Face</span><b id="v-face">0%</b></div><div class="track"><div class="fill" id="f-face"></div></div></div>
+      <div class="meter m-voice"><div class="k"><span>Voice</span><b id="v-voice">0%</b></div><div class="track"><div class="fill" id="f-voice"></div></div></div>
+      <div class="meter m-ctx"><div class="k"><span>Insider context</span><b id="v-ctx">0%</b></div><div class="track"><div class="fill" id="f-ctx"></div></div></div>
+      <div class="meter m-time"><div class="k"><span>Timing</span><b id="v-time">0%</b></div><div class="track"><div class="fill" id="f-time"></div></div></div>
+      <div class="verdict" id="verdict">0 of 9 sources collected. Ryan has nothing yet.</div>
+      <button class="btn ghost" id="all">Collect everything</button>
+    </aside>
+    <div>
+      <div class="srcs" id="srcs"></div>
+      <div class="detail" id="detail">
+        <div><div class="lab a">What Ryan gets</div><p id="dGet">Pick a source.</p></div>
+        <div><div class="lab d">What's in your control</div><p id="dDo">Each source has a small fix. Most of them cost nothing.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="you">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="kicker cold">Plot twist</div>
+      <h2>The Exec is the face. You're the target.</h2>
+      <p class="lead">Ryan doesn't call the Exec. He calls whoever can do what he wants: pay an invoice, reset a password, share a file. Your public profile tells him who that is, how new you are, and whether you'd feel awkward saying no.</p>
+      <p class="muted">The perfect target is new, helpful, a little eager to impress, and just announced it on the internet.</p>
+    </div>
+    <div class="linkedin" aria-label="Example social profile with risky details highlighted">
+      <div class="nm">Jordan P.</div>
+      <div class="ti"><mark>Accounts Payable Specialist</mark> · <mark>Started 3 weeks ago</mark></div>
+      <div class="post">So excited to join the finance team! Huge thanks to <mark>my new manager, the VP of Finance</mark>, for the warm welcome. Can't wait to <mark>help close our big Q4 deal</mark> 🎉</div>
+      <div class="note">→ Who pays invoices. Too new to know the process. Name of the boss to fake. A pretext, ready-made.</div>
+    </div>
+  </section>
+
+  <div class="next"><a href="index.html">◀ The mask</a><a href="play.html">The play ▶</a></div>
+</div>
+<script>
+const SRC=[
+ {ic:'🎤',nm:'Town hall recording',y:{face:30,voice:20,ctx:10,time:0},tags:['FACE','VOICE'],
+  get:'Twenty-plus minutes of the Exec facing a camera, talking naturally, in his real office. That office becomes the fake background.',
+  do:'Keep internal recordings internal. Not every all-hands needs to be on a public channel.'},
+ {ic:'📺',nm:'Conference keynote on YouTube',y:{face:30,voice:20,ctx:5,time:0},tags:['FACE','VOICE'],
+  get:'High-quality video from several angles, under stage lights, with clean audio. Ideal training material.',
+  do:'Nothing to hide here, and that\'s the point: assume any leader\'s face and voice can be copied. Verify the request, not the person.'},
+ {ic:'🎧',nm:'Podcast interview',y:{face:0,voice:35,ctx:10,time:0},tags:['VOICE'],
+  get:'An hour of relaxed, natural speech: his pace, his pet phrases, the way he says "folks." A voice clone needs far less than that.',
+  do:'Same rule. A familiar voice proves nothing on its own.'},
+ {ic:'📞',nm:'Voicemail greeting',y:{face:0,voice:15,ctx:0,time:0},tags:['VOICE'],
+  get:'"Hi, you\'ve reached..." Ten seconds of clean audio recorded in a quiet room. Free to collect, any time, by calling.',
+  do:'Use the system\'s default greeting instead of your own voice. Yes, really.'},
+ {ic:'💼',nm:'LinkedIn',y:{face:5,voice:0,ctx:30,time:0},tags:['CONTEXT'],
+  get:'Who reports to whom, who just joined Finance, who runs IT. This is how Ryan picks who to call.',
+  do:'Share your role, not your reporting chain, systems or start date. Skip the "first week!" post or keep it vague.'},
+ {ic:'📰',nm:'Press releases and news',y:{face:0,voice:0,ctx:25,time:10},tags:['CONTEXT'],
+  get:'A pending acquisition or a new partner. Now "this deal is confidential, wire the deposit today" sounds plausible.',
+  do:'Know that real deals never skip the normal approval path, however secret they are.'},
+ {ic:'📸',nm:'Personal social media',y:{face:15,voice:5,ctx:10,time:25},tags:['FACE','TIMING'],
+  get:'Vacation photos and "boarding now!" posts. A rushed, glitchy call from an airport makes perfect sense, and he can\'t easily be reached to double-check.',
+  do:'Post the trip after you\'re home. Lock personal accounts to friends.'},
+ {ic:'✈️',nm:'Out-of-office reply',y:{face:0,voice:0,ctx:10,time:45},tags:['TIMING','CONTEXT'],
+  get:'Exact dates he\'s unavailable, plus the name of who\'s covering. That\'s the window to strike and the person to impersonate next.',
+  do:'Keep external auto-replies short: "I\'m out, I\'ll reply when I\'m back." No dates, no itinerary, no backup name for outsiders.'},
+ {ic:'✉️',nm:'Email signature and website',y:{face:5,voice:0,ctx:10,time:0},tags:['CONTEXT'],
+  get:'Titles, phone formats, the assistant\'s name, the right logo. Enough to make a fake text or invite look routine.',
+  do:'Normal, and fine to have. It\'s why a message looking official proves nothing.'}
+];
+const got=new Set(),tot={face:0,voice:0,ctx:0,time:0};
+const box=document.getElementById('srcs');
+SRC.forEach((s,i)=>{const b=document.createElement('button');b.className='src';b.setAttribute('aria-pressed','false');
+  b.innerHTML=`<span class="ic" aria-hidden="true">${s.ic}</span><span class="nm">${s.nm}</span><span class="yield">${s.tags.map(t=>`<span>${t}</span>`).join('')}</span>`;
+  b.addEventListener('click',()=>pick(i));box.appendChild(b)});
+function pick(i,quiet){const s=SRC[i],b=box.children[i];
+  [...box.children].forEach(x=>x.classList.remove('sel'));b.classList.add('sel');
+  if(!got.has(i)){got.add(i);b.classList.add('got');b.setAttribute('aria-pressed','true');for(const k in tot)tot[k]+=s.y[k]}
+  if(!quiet){document.getElementById('dGet').textContent=s.get;document.getElementById('dDo').textContent=s.do}
+  render()}
+function render(){for(const k in tot){const v=Math.min(100,tot[k]);document.getElementById('f-'+k).style.width=v+'%';document.getElementById('v-'+k).textContent=v+'%'}
+  const v=document.getElementById('verdict'),n=got.size;
+  const full=Object.values(tot).every(x=>x>=80);
+  v.classList.toggle('ready',full);
+  v.textContent=full?`${n} of 9 collected. File complete. Hacking required: none.`:n===0?'0 of 9 sources collected. Ryan has nothing yet.':`${n} of 9 collected. ${tot.face>=80&&tot.voice>=80?'He can already look and sound like the Exec.':'Keep going.'}`}
+document.getElementById('all').addEventListener('click',()=>{SRC.forEach((_,i)=>pick(i,true));document.getElementById('dGet').textContent='Everything above, in about an afternoon of browsing. All of it public, all of it posted on purpose.';document.getElementById('dDo').textContent='You can\'t delete your boss from the internet. You can make sure that a face and a voice are never enough to get money, access or data.'});
+</script>
+</body></html>
