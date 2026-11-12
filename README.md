@@ -1,6 +1,6 @@
 # Day Zero
 
-An interactive cybersecurity awareness module built around the 2026 attack on French supermarket refrigeration systems.
+An interactive cybersecurity awareness module built around the attack on French supermarket refrigeration systems.
 
 Live site: https://machinesandhumans.github.io/day-zero/
 
