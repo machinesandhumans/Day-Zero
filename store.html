@@ -193,12 +193,17 @@ wire('bus',[[-6.9,2.0,-4.85],[-6.9,BY,BZ],[8.0,BY,BZ]]);
 wire('d1',[[cases[0].top.x,BY,BZ],[cases[0].top.x,BY,cases[0].top.z],[cases[0].top.x,2.66,cases[0].top.z]]);
 wire('d2',[[cases[1].top.x,BY,BZ],[cases[1].top.x,BY,cases[1].top.z],[cases[1].top.x,2.66,cases[1].top.z]]);
 wire('d3',[[8.0,BY,BZ],[8.0,BY,-1.25],[8.0,2.36,-1.25]]);
+// each controller wired into the case it runs: across the top, then down the side to the coils and heaters
+wire('c1',[[-2.2,2.4,-4.2],[-0.47,2.4,-4.2],[-0.47,0.35,-4.2]]);
+wire('c2',[[2.4,2.4,-4.05],[4.03,2.4,-4.05],[4.03,0.35,-4.05]]);
+wire('c3',[[8.0,2.0,-1.3],[8.0,0.35,-1.3]]);
 WIRES.net.mesh.visible=false;
 function wireState(names,color){for(const k in WIRES){WIRES[k].mat.color.set(names.includes(k)?color:'#2c3846');}}
 
 /* attack pulses travel along the hot route */
-const ROUTE=['net','ant','modem','bus','d1','d2','d3'];
-const pulses=[];const pulseGeo=new THREE.SphereGeometry(0.11,12,10);
+const ROUTE=['net','ant','modem','bus','d1','d2','d3','c1','c2','c3'];
+const FLOW=['bus','d1','d2','d3','c1','c2','c3'];
+const pulses=[];const pulseGeo=new THREE.SphereGeometry(0.08,12,10);
 ROUTE.forEach((w,i)=>{for(let k=0;k<3;k++){const m=new THREE.Mesh(pulseGeo,new THREE.MeshBasicMaterial({color:'#ff5b4f'}));m.visible=false;scene.add(m);pulses.push({m,w,off:k/3});}});
 
 /* attacker: a glowing laptop in the dark, outside */
@@ -233,8 +238,8 @@ function placeTags(){const w=view.clientWidth,h=view.clientHeight;for(const k in
 /* ---------- steps ---------- */
 const STEPS=[
  {h:'2 a.m. A supermarket, closed and quiet.',b:'The freezers hold at minus 18. The dairy case and the cold room hold just above zero. Nobody is in the building.',cam:[8,8,11],tgt:[0,1,-1.8],tags:['fridge','dairy','room','aisle']},
- {h:'Every case has its own controller.',b:'A small box watches the temperature and runs defrost cycles: short bursts of heat that melt ice off the coils. Harmless when it runs for a few minutes.',cam:[3.9,5.4,5.8],tgt:[3.3,1.9,-3.4],tags:['ctrl1','ctrl2','ctrl3'],rings:true},
- {h:'They all answer to one system manager.',b:'A box in the back office runs every case in the store. Change a setting there, and it changes on every case at once.',cam:[-1.2,5,3],tgt:[-3.6,2.0,-4.4],tags:['mgr','ctrl1','ctrl2'],wires:['bus','d1','d2','d3'],mgr:true},
+ {h:'Every case has its own controller.',b:'A small box watches the temperature and runs defrost cycles: short bursts of heat that melt ice off the coils. Harmless when it runs for a few minutes.',cam:[3.9,5.4,5.8],tgt:[3.3,1.9,-3.4],tags:['ctrl1','ctrl2','ctrl3'],wires:['c1','c2','c3'],rings:true},
+ {h:'They all answer to one system manager.',b:'A box in the back office runs every case in the store. Change a setting there, and it changes on every case at once.',cam:[1.3,7.6,9.8],tgt:[1.0,1.5,-3.2],tags:['mgr','ctrl1','ctrl2','ctrl3'],wires:FLOW,flow:true,mgr:true},
  {h:'A modem lets repair technicians connect remotely.',b:'A technician can fix a warm freezer at 3 a.m. without driving out. In many stores, the system manager behind it was a legacy model that no longer received security updates.',cam:[-3.6,4.6,2.4],tgt:[-7.2,1.7,-4.6],tags:['modem','mgr','badge'],wires:['ant','modem'],modem:true,mgr:true},
  {h:'The attackers come in through that door.',b:'From anywhere online, they reach the modem, then the system manager, and change one thing: the defrost settings. The heaters switch on and stay on.',cam:[5,9,12],tgt:[-3.5,2.5,-4.5],tags:['att','badge','mgr'],hot:true},
  {h:'Product is lost. Then fires start.',b:'Fresh and frozen food heats past the point of saving. Heaters built to run for minutes run for hours. Across France, at least 15 fires broke out that night.',cam:[0.6,4.2,3.8],tgt:[0,2,-4.3],tags:['fridge','dairy'],hot:true,fire:true},
@@ -248,7 +253,7 @@ function goStep(i){step=i;const s=STEPS[i];
   controllers.forEach(c=>c.ring.visible=!!s.rings);mgrRing.visible=!!s.mgr&&!s.hot;modemRing.visible=!!s.modem;
   if(s.hot)wireState(ROUTE,'#ff5b4f');else wireState(s.wires||[],'#5fb8e6');
   WIRES.net.mesh.visible=!!s.hot;att.visible=!!s.hot;attGlow.intensity=s.hot?1.2:0;
-  pulses.forEach(p=>p.m.visible=!!s.hot&&!reduce);
+  const live=s.hot?ROUTE:s.flow?FLOW:[];pulses.forEach(p=>{p.m.visible=live.includes(p.w)&&!reduce;p.m.material.color.set(s.hot?'#ff5b4f':'#bfe9ff');});
   heatTarget=s.hot?1:0;
   fires.forEach(f=>f.sp.visible=!!s.fire);smokes.forEach(m=>m.sm.visible=!!s.fire);fireLight.intensity=s.fire?2.2:0;
   camFrom=camera.position.clone();tgtFrom=controls.target.clone();camTo=new THREE.Vector3(...s.cam);tgtTo=new THREE.Vector3(...s.tgt);camT=reduce?1:0;
