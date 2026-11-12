@@ -55,7 +55,7 @@
   <header>
     <div class="kicker">Chapter 2 · The ingredients</div>
     <h1>He didn't hack anything. He shopped.</h1>
-    <p class="lead">A deepfake needs four things: the face, the voice, enough context to sound like an insider, and good timing. Click each place Ryan looked and watch the Exec's file fill up.</p>
+    <p class="lead">A deepfake needs four things: the face, the voice, enough context to sound like an insider, and good timing. Click each place Brian looked and watch the Exec's file fill up.</p>
   </header>
 
   <section class="board">
@@ -65,13 +65,13 @@
       <div class="meter m-voice"><div class="k"><span>Voice</span><b id="v-voice">0%</b></div><div class="track"><div class="fill" id="f-voice"></div></div></div>
       <div class="meter m-ctx"><div class="k"><span>Insider context</span><b id="v-ctx">0%</b></div><div class="track"><div class="fill" id="f-ctx"></div></div></div>
       <div class="meter m-time"><div class="k"><span>Timing</span><b id="v-time">0%</b></div><div class="track"><div class="fill" id="f-time"></div></div></div>
-      <div class="verdict" id="verdict">0 of 9 sources collected. Ryan has nothing yet.</div>
+      <div class="verdict" id="verdict">0 of 9 sources collected. Brian has nothing yet.</div>
       <button class="btn ghost" id="all">Collect everything</button>
     </aside>
     <div>
       <div class="srcs" id="srcs"></div>
       <div class="detail" id="detail">
-        <div><div class="lab a">What Ryan gets</div><p id="dGet">Pick a source.</p></div>
+        <div><div class="lab a">What Brian gets</div><p id="dGet">Pick a source.</p></div>
         <div><div class="lab d">What's in your control</div><p id="dDo">Each source has a small fix. Most of them cost nothing.</p></div>
       </div>
     </div>
@@ -81,14 +81,14 @@
     <div style="display:flex;flex-direction:column;gap:12px">
       <div class="kicker cold">Plot twist</div>
       <h2>The Exec is the face. Jordan is the target.</h2>
-      <p class="lead">Ryan doesn't call the Exec. He calls whoever can do what he wants: add a supplier, release a payment, reset a password. Jordan's public profile tells him exactly who that is, and who her boss is.</p>
+      <p class="lead">Brian's video goes to everyone, but he only needs one person with the right access to run his file. Jordan has admin access to the supplier system, and her public profile says so. It also tells him who her boss is, and gives him a reason to message her directly.</p>
       <p class="muted">The perfect target can move money or open a door, works for someone worth faking, and is proud of her job. That last part is a good thing. It just shouldn't be a map.</p>
     </div>
     <div class="linkedin" aria-label="Example social profile with risky details highlighted">
       <div class="lhead"><img src="img/jordan-summit.jpg" alt="Jordan smiling at the supplier summit, holding her badge"><div><div class="nm">Jordan Reyes</div>
       <div class="ti"><mark>Procurement Lead</mark> at <mark>Rhythmatic</mark> · AFib monitoring</div></div></div>
       <div class="post">Great day at the supplier summit with <mark>my boss, our Exec</mark> 🙌 Busy quarter ahead: <mark>onboarding new component suppliers</mark> as we scale up the monitor. <mark>DMs open for vendors!</mark></div>
-      <div class="note">→ Who can add a supplier. Whose face to borrow. A cover story (new suppliers) and an open door for messages.</div>
+      <div class="note">→ Who has access worth stealing. Whose face to borrow. An open door for messages from strangers.</div>
     </div>
   </section>
 
@@ -109,7 +109,7 @@ const SRC=[
   get:'"Hi, you\'ve reached..." Ten seconds of clean audio recorded in a quiet room. Free to collect, any time, by calling.',
   do:'Use the system\'s default greeting instead of your own voice. Yes, really.'},
  {ic:'💼',nm:'LinkedIn',y:{face:5,voice:0,ctx:30,time:0},tags:['CONTEXT'],
-  get:'Who reports to whom, who just joined Finance, who runs IT. This is how Ryan picks who to call.',
+  get:'Who reports to whom, who just joined Finance, who runs IT. This is how Brian picks who to call.',
   do:'Share your role, not your reporting chain, systems or start date. Skip the "first week!" post or keep it vague.'},
  {ic:'📰',nm:'Press releases and news',y:{face:0,voice:0,ctx:25,time:10},tags:['CONTEXT'],
   get:'A pending acquisition or a new partner. Now "this deal is confidential, wire the deposit today" sounds plausible.',
@@ -138,7 +138,7 @@ function render(){for(const k in tot){const v=Math.min(100,tot[k]);document.getE
   const v=document.getElementById('verdict'),n=got.size;
   const full=Object.values(tot).every(x=>x>=80);
   v.classList.toggle('ready',full);
-  v.textContent=full?`${n} of 9 collected. File complete. Hacking required: none.`:n===0?'0 of 9 sources collected. Ryan has nothing yet.':`${n} of 9 collected. ${tot.face>=80&&tot.voice>=80?'He can already look and sound like the Exec.':'Keep going.'}`}
+  v.textContent=full?`${n} of 9 collected. File complete. Hacking required: none.`:n===0?'0 of 9 sources collected. Brian has nothing yet.':`${n} of 9 collected. ${tot.face>=80&&tot.voice>=80?'He can already look and sound like the Exec.':'Keep going.'}`}
 document.getElementById('all').addEventListener('click',()=>{SRC.forEach((_,i)=>pick(i,true));document.getElementById('dGet').textContent='Everything above, in about an afternoon of browsing. All of it public, all of it posted on purpose.';document.getElementById('dDo').textContent='You can\'t delete your boss from the internet. You can make sure that a face and a voice are never enough to get money, access or data.'});
 </script>
 </body></html>

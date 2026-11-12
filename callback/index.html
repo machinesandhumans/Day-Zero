@@ -92,37 +92,37 @@
     <div class="copy">
       <div class="kicker">After the video · Chapter 1 · The mask</div>
       <h1>That wasn't the Exec.</h1>
-      <p class="lead">It was Ryan, in his bedroom, wearing the Exec's face and voice like a costume. The software did it live, while he talked.</p>
-      <p class="muted">Drag across the call to take the mask off.</p>
+      <p class="lead">It was Brian, in his bedroom, recording a message to the whole company in the Exec's face and voice. The software swapped them in while he talked. His mom did not help.</p>
+      <p class="muted">Drag across the video to take the mask off.</p>
     </div>
     <div class="callframe wipe" id="wipe">
-      <img class="under" src="img/ryan.jpg" alt="Ryan, a young man in a grey hoodie with headphones around his neck, sitting in the same office">
-      <img class="over" src="img/exec.jpg" alt="The Exec, an older man in a navy sweater, on a video call from his office">
+      <img class="under" src="img/ryan.jpg" alt="Brian, a young man in a grey hoodie with headphones around his neck, sitting in the same office">
+      <img class="over" src="img/exec.jpg" alt="The Exec, an older man in a navy sweater, recording a message from his office">
       <span class="tag l">What you saw</span><span class="tag r">Who was there</span>
       <div class="bar"></div>
       <input type="range" min="0" max="100" value="100" aria-label="Reveal: drag left to remove the mask" id="wipeIn">
       <div class="knob" aria-hidden="true">◀▶</div>
-      <div class="callbar"><span class="who"><span class="dot"></span>The Exec · Video call</span><span>HD · 00:41</span></div>
+      <div class="callbar"><span class="who"><span class="dot"></span>A message from the Exec</span><span>REC · 00:41</span></div>
     </div>
   </section>
 
   <section style="display:flex;flex-direction:column;gap:14px">
     <div>
       <div class="kicker cold">The cast</div>
-      <h2>Three faces on that call. Two people.</h2>
+      <h2>Three faces in that video. Two people.</h2>
     </div>
     <div class="cast">
       <div class="person target"><img src="img/jordan-desk.jpg" alt="Jordan at her desk in the Rhythmatic office"><div><span class="role">The target</span><b>Jordan Reyes</b><span>Procurement lead at Rhythmatic, which makes a wearable monitor for AFib. She sets up suppliers and releases their payments. Six years in, very good at her job, and the Exec's go-to person.</span></div></div>
-      <div class="person"><img src="img/exec.jpg" alt="The Exec on a video call"><div><span class="role">The face</span><b>The Exec</b><span>Jordan's boss. Runs operations. Gives a great town hall, which turns out to be the problem. Wasn't on this call.</span></div></div>
-      <div class="person fake"><img src="img/ryan.jpg" alt="Ryan, the scammer, in a grey hoodie"><div><span class="role">The scammer</span><b>Ryan</b><span>Not the Exec. Works from his bedroom. Lives on lo mein and other people's faces.</span></div></div>
+      <div class="person"><img src="img/exec.jpg" alt="The Exec"><div><span class="role">The face</span><b>The Exec</b><span>Jordan's boss. Runs operations. Gives a great town hall, which turns out to be the problem. Never recorded this video.</span></div></div>
+      <div class="person fake"><img src="img/ryan.jpg" alt="Brian, the scammer, in a grey hoodie"><div><span class="role">The scammer</span><b>Brian</b><span>Not the Exec. Works from his bedroom, and insists it's a real job. Lives on lo mein and other people's faces.</span></div></div>
     </div>
   </section>
 
   <section style="display:flex;flex-direction:column;gap:14px">
     <div>
       <div class="kicker cold">The graphic</div>
-      <h2>How Ryan becomes the Exec, in four steps.</h2>
-      <p class="muted">No hacking. No break-in. Just public video, a decent computer and an evening.</p>
+      <h2>How Brian becomes the Exec, in four steps.</h2>
+      <p class="muted">No hacking. No break-in. Just public video, a decent computer, an evening, and a few retakes.</p>
     </div>
     <div class="steps" role="group" aria-label="Steps">
       <button aria-pressed="true" data-s="0"><span class="n">STEP 1</span><span class="t">Harvest</span><span class="prog"><i></i></span></button>
@@ -153,44 +153,44 @@
 
       <div class="scene" data-s="1">
         <div class="mesh">
-          <div class="mface b"><img src="img/face-ryan.jpg" alt="Ryan's face with tracking points"><svg viewBox="0 0 200 200" id="meshR"></svg><span class="lbl">Ryan's face</span></div>
+          <div class="mface b"><img src="img/face-ryan.jpg" alt="Brian's face with tracking points"><svg viewBox="0 0 200 200" id="meshR"></svg><span class="lbl">Brian's face</span></div>
           <div class="arrow"><b>→</b>maps<br>onto</div>
           <div class="mface"><img src="img/face-exec.jpg" alt="The Exec's face with matching tracking points"><svg viewBox="0 0 200 200" id="meshE"></svg><span class="lbl">The Exec's face</span></div>
         </div>
         <div class="txt">
           <span class="stepnum">Step 2 of 4</span>
           <h3>Teach the software both faces.</h3>
-          <p>The model learns the Exec's face point by point: how his mouth shapes a "p," how his eyes crease when he smiles. Then it learns Ryan's.</p>
-          <p>Now it can take <b>any expression Ryan makes</b> and draw it with the Exec's face. A voice model does the same with sound: Ryan speaks, the Exec's voice comes out.</p>
+          <p>The model learns the Exec's face point by point: how his mouth shapes a "p," how his eyes crease when he smiles. Then it learns Brian's.</p>
+          <p>Now it can take <b>any expression Brian makes</b> and draw it with the Exec's face. A voice model does the same with sound: Brian speaks, the Exec's voice comes out.</p>
         </div>
       </div>
 
       <div class="scene" data-s="2">
         <div class="roomwrap">
-          <img src="img/room.jpg" alt="Ryan's bedroom: ring light, two monitors, takeout boxes, movie posters">
+          <img src="img/room.jpg" alt="Brian's bedroom: ring light, two monitors, takeout boxes, movie posters">
           <div class="hot" style="left:69%;top:44%"><i></i><span>Ring light: even light hides seams</span></div>
           <div class="hot" style="left:82%;top:58%"><i></i><span>Gaming PC: swaps the face live</span></div>
           <div class="hot" style="left:83%;top:82%"><i></i><span>Dinner (this matters later)</span></div>
-          <div class="hot" style="left:21%;top:52%"><i></i><span>Ryan</span></div>
+          <div class="hot" style="left:21%;top:52%"><i></i><span>Brian</span></div>
         </div>
         <div class="txt">
           <span class="stepnum">Step 3 of 4</span>
-          <h3>Ryan performs. The computer does the makeup.</h3>
-          <p>The "studio" is a bedroom. A ring light keeps the face evenly lit so the swap holds together. A gaming graphics card redraws the Exec's face <b>30 times a second</b>, fast enough for a live call.</p>
-          <p>The office behind him? A virtual background. Same trick you use to hide laundry.</p>
+          <h3>Brian performs. The computer does the makeup. Mom does the interruptions.</h3>
+          <p>The "studio" is a bedroom. A ring light keeps the face evenly lit so the swap holds together. A gaming graphics card redraws the Exec's face <b>30 times a second</b>, fast enough to work live.</p>
+          <p>When his mom walks in, the mask drops and he has to "start this whole thing over from scratch." That's the advantage of a recording: <b>retakes</b>. Nobody at Rhythmatic ever sees the bloopers. They only see the clean take.</p>
         </div>
       </div>
 
       <div class="scene" data-s="3">
         <div class="deliver">
-          <div class="mini"><img src="img/ryan.jpg" alt="Ryan's real camera feed"><span class="tag" style="background:rgba(255,59,48,.85)">His camera</span></div>
-          <div class="arrow"><b>→</b>face swap<br>+ voice clone<br>≈ 0.2 s</div>
-          <div class="mini"><img src="img/exec.jpg" alt="What the other side sees: the Exec"><span class="tag">Jordan's screen</span></div>
+          <div class="mini"><img src="img/ryan.jpg" alt="Brian's real camera feed"><span class="tag" style="background:rgba(255,59,48,.85)">His camera</span></div>
+          <div class="arrow"><b>→</b>face swap<br>+ voice clone<br>+ email</div>
+          <div class="mini"><img src="img/exec.jpg" alt="What the other side sees: the Exec"><span class="tag">Jordan's inbox</span></div>
         </div>
         <div class="txt">
           <span class="stepnum">Step 4 of 4</span>
-          <h3>He calls Jordan. She sees her boss.</h3>
-          <p>The fake feed is piped into an ordinary video call as if it were a webcam. The call app has no idea. Neither does Jordan.</p>
+          <h3>He hits send. Everyone sees their boss.</h3>
+          <p>The finished video goes out to all of Rhythmatic from an address one word off from the real one: a message from the Exec about staying safe online. The video is the bait. The link under it is the hook.</p>
           <p>The weak spot is never the picture. It's <b>what the picture asks you to do</b>. That's the rest of this module.</p>
         </div>
       </div>
@@ -200,9 +200,10 @@
 
   <section class="bottom">
     <div class="copy">
-      <div class="kicker">What it cost Ryan</div>
+      <div class="kicker">What it cost Brian</div>
       <p class="big">Cheaper than the noodles.</p>
-      <p class="lead" style="margin-top:6px">Making a convincing live deepfake used to need a studio. Now it needs a hobby. The software is free, the face is public, and the hardware is what your nephew games on.</p>
+      <p class="lead" style="margin-top:6px">Making a convincing deepfake used to need a studio. Now it needs a hobby. The software is free, the face is public, and the hardware is what your nephew games on.</p>
+      <p class="muted" style="font-size:15px">Brian is a joke. The industry isn't: most real deepfake fraud is run by organized crime groups, and some by governments. They use the same cheap tools.</p>
       <p class="small">Prices are illustrative. The loss is real: engineering firm Arup, Hong Kong office, 2024. More in Chapter 3.</p>
     </div>
     <div class="receipt" aria-label="Itemized receipt">

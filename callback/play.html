@@ -19,7 +19,22 @@
 .bub.from{font-size:12px;color:var(--muted);background:none;padding:0 4px}
 .ev .callframe{border-radius:12px}
 .ev.end .bub{background:#3a1512;border:1px solid var(--alarm)}
-.ev.cur .bub{box-shadow:0 0 0 2px var(--amber)}
+.ev.cur .bub,.ev.cur .mail,.ev.cur .uac{box-shadow:0 0 0 2px var(--amber)}
+.mail{background:#f4f2ee;color:#1d2226;border-radius:12px;padding:12px;font-size:14px;display:flex;flex-direction:column;gap:8px}
+.mail .mh{font-size:13px;color:#444;border-bottom:1px solid #ddd;padding-bottom:6px}
+.mail .mh b{color:#111}
+.mail .thumb{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:16/9}
+.mail .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.mail .play{position:absolute;inset:0;margin:auto;width:48px;height:48px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;display:grid;place-items:center;font-size:18px}
+.mail .dur{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.7);color:#fff;font-family:var(--mono);font-size:11px;padding:1px 5px;border-radius:3px}
+.mail p{margin:0;font-size:14px}
+.mail .fine{color:#666;font-size:12.5px}
+.mbtn{align-self:flex-start;background:#0f6cbd;color:#fff;font-weight:600;padding:8px 14px;border-radius:6px;font-size:14px}
+.uac{background:#1f2d3d;border:1px solid #3a5470;border-radius:10px;padding:12px;font-size:14px;display:flex;flex-direction:column;gap:8px}
+.uac .uh{font-weight:600}
+.uac .ub{color:#b9c6d4;font-size:13px}
+.uac .ub i{color:var(--amber);font-style:normal}
+.ubtn{display:flex;gap:8px}.ubtn span{flex:1;text-align:center;padding:6px;border-radius:5px;background:#2c3e52}.ubtn .yes{background:#0f6cbd}
 .side{display:flex;flex-direction:column;gap:16px;min-width:0;position:sticky;top:12px}
 @media (max-width:860px){.side{position:static}}
 .levers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
@@ -49,35 +64,35 @@
   <header class="hsplit">
     <div>
     <div class="kicker">Chapter 3 · The play</div>
-    <h1>The face gets him in the room. The script does the rest.</h1>
-    <p class="lead">Here's how Ryan works Jordan, procurement lead at Rhythmatic, whose boss is the Exec. Every deepfake scam pulls the same five levers. Step through it and watch them light up.</p>
+    <h1>The face gets him in the inbox. The script does the rest.</h1>
+    <p class="lead">Brian's finished take goes out to all of Rhythmatic. Then he goes after one person: Jordan, procurement lead, whose boss is the Exec. Step through her morning and watch the five levers light up.</p>
     </div>
-    <figure class="photo"><img src="img/jordan-text.jpg" alt="Jordan at her desk with coffee, reading an unexpected text"><figcaption>Monday, 8:52 AM. A text from "the Exec."</figcaption></figure>
+    <figure class="photo"><img src="img/jordan-text.jpg" alt="Jordan at her desk with coffee, reading an unexpected text"><figcaption>Monday, 8:55 AM. A text from "the Exec."</figcaption></figure>
   </header>
 
   <section class="playgrid">
     <div class="phone" aria-live="polite">
-      <div class="top"><span>Jordan's phone</span><span>Monday</span></div>
+      <div class="top"><span>Jordan's inbox and phone</span><span>Monday</span></div>
       <div class="feed" id="feed">
-        <div class="ev"><div class="ts">8:52 AM · unknown number</div><div class="bub">Jordan, it's me. New phone, save this number. You at your desk? Need your help with something confidential.</div></div>
-        <div class="ev"><div class="ts">8:55 AM</div><div class="bub">Legal wants this off Teams and email until it's signed. Jumping on a quick video call.</div></div>
-        <div class="ev"><div class="ts">9:01 AM · video call</div><div class="callframe"><img src="img/exec.jpg" alt="The Exec on a video call"><img class="pip" src="img/jordan-pip.jpg" alt="Jordan's camera"><div class="callbar"><span class="who"><span class="dot"></span>The Exec</span><span>poor connection</span></div></div><div class="bub from">"Sorry, airport wifi. I'm boarding in twenty minutes."</div></div>
-        <div class="ev"><div class="ts">9:04 AM</div><div class="bub">We're switching sensor-chip suppliers before the shortage hits. Set them up with the bank details in the PDF I just sent and release the $480K deposit. It has to land before 10 or we lose our allocation.</div></div>
-        <div class="ev"><div class="ts">9:06 AM</div><div class="bub">You're the only one I trust with this. Don't loop in Finance yet, I'll walk them through it tonight.</div></div>
-        <div class="ev end"><div class="ts">9:41 AM</div><figure class="photo"><img src="img/jordan-uhoh.jpg" alt="Jordan staring at her phone, realizing it was a scam"></figure><div class="bub">Supplier added, deposit released. By 9:50 the money has hopped through three accounts in three countries. At 11:15 the real Exec texts from a dentist's chair: "What supplier?"</div></div>
+        <div class="ev"><div class="ts">8:47 AM · email to all staff</div><div class="mail"><div class="mh"><b>The Exec</b> &lt;exec@rhythmatic-hq.com&gt;<br>To: All Rhythmatic<br><b>A message from me: staying alert</b></div><div class="thumb"><img src="img/exec.jpg" alt="Video thumbnail of the Exec"><span class="play">▶</span><span class="dur">0:41</span></div><p>"Cyber attacks are constant now, and they're getting a lot more convincing..."</p></div></div>
+        <div class="ev"><div class="ts">8:48 AM · same email, below the video</div><div class="mail"><p>Every employee must install the updated <b>Rhythmatic Secure Agent</b> by Friday. Procurement and Finance, please complete it today.</p><span class="mbtn">Install Secure Agent</span><p class="fine">Thanks for helping keep Rhythmatic safe.</p></div></div>
+        <div class="ev"><div class="ts">8:55 AM · text, unknown number</div><div class="bub">Jordan, it's me, new number. You see my video? You've got admin access to the supplier system, so I need yours done before the 10:00 vendor review. Thanks for setting the example.</div></div>
+        <div class="ev"><div class="ts">8:58 AM</div><div class="bub">IT is swamped this week. No need to open a ticket, just run it. Takes two minutes.</div></div>
+        <div class="ev"><div class="ts">9:02 AM · Jordan's laptop</div><div class="uac"><div class="uh">Do you want to allow this app to make changes to your device?</div><div class="ub"><b>RhythmaticSecureAgent.exe</b><br>Verified publisher: <i>Unknown</i></div><div class="ubtn"><span class="yes">Yes</span><span>No</span></div></div><div class="bub from">The email said to click Yes. She clicks Yes.</div></div>
+        <div class="ev end"><div class="ts">9:03 AM</div><figure class="photo"><img src="img/jordan-uhoh.jpg" alt="Jordan staring at her phone, realizing she installed malware"></figure><div class="bub">"Install complete." Nothing looks different. That's the point. Brian now has a quiet door into Rhythmatic's network, and a buyer for it by lunch. Thursday, the real IT team emails: "We have not sent any security agent."</div></div>
       </div>
     </div>
     <div class="side">
       <div class="levers" id="levers">
-        <div class="lever" data-l="channel"><span class="ic">📱</span>New channel</div>
-        <div class="lever" data-l="secrecy"><span class="ic">🤫</span>Secrecy</div>
         <div class="lever" data-l="authority"><span class="ic">👔</span>Authority</div>
+        <div class="lever" data-l="fear"><span class="ic">😨</span>Fear</div>
         <div class="lever" data-l="urgency"><span class="ic">⏱️</span>Urgency</div>
-        <div class="lever" data-l="isolation"><span class="ic">🧍</span>Isolation</div>
+        <div class="lever" data-l="channel"><span class="ic">📱</span>New channel</div>
+        <div class="lever" data-l="isolation"><span class="ic">🧍</span>Skip the process</div>
       </div>
       <div class="explain" id="explain">
         <div class="lv">Ready</div>
-        <h3>Ryan has his file. Jordan has a coffee.</h3>
+        <h3>Brian has his file. Jordan has a coffee.</h3>
         <p>Press "Next message" to play the morning.</p>
       </div>
       <div class="row"><button class="btn" id="next">Next message →</button><button class="btn ghost" id="reset">Start over</button><span class="small" id="cnt">0 / 6</span></div>
@@ -87,19 +102,19 @@
   <section style="display:flex;flex-direction:column;gap:14px">
     <div><div class="kicker cold">What they're after</div><h2>It's rarely about the video. It's about the ask.</h2></div>
     <div class="wants">
-      <div class="want"><span class="ic">💸</span><b>Money</b><span>A wire, an "urgent" invoice, new bank details for a supplier, a stack of gift cards.</span></div>
+      <div class="want"><span class="ic">💾</span><b>A download</b><span>A "security update," a "meeting plugin," a "contract to review." One click gives them a door into the network.</span></div>
       <div class="want"><span class="ic">🔑</span><b>Passwords and codes</b><span>"Read me the code that just came to your phone." "Approve the sign-in prompt so I can get in."</span></div>
       <div class="want"><span class="ic">🚪</span><b>Access</b><span>Reset a login, add a new phone to someone's account, install a "screen sharing" tool.</span></div>
-      <div class="want"><span class="ic">📁</span><b>Data</b><span>Customer and patient lists, product designs, payroll and tax forms.</span></div>
+      <div class="want"><span class="ic">📁</span><b>Data</b><span>Customer and patient lists, product designs, payroll and tax forms. And money: wires, invoices, changed bank details.</span></div>
     </div>
   </section>
 
   <section style="display:flex;flex-direction:column;gap:14px">
-    <div><div class="kicker">This happened</div><h2>Four real companies. One paid.</h2><p class="muted">The difference was never better eyesight. Someone checked.</p></div>
+    <div><div class="kicker">This happened</div><h2>Four real cases. Two got through.</h2><p class="muted">The difference was never better eyesight. Someone checked.</p></div>
     <div class="cases">
       <div class="panel case"><span class="yr">Arup · Hong Kong · 2024</span><b>A whole meeting of fakes.</b><p>A finance employee joined a video call with the "CFO" and several "colleagues." Every one of them was a deepfake. Fifteen transfers followed.</p><span class="out lost">Lost about $25.6M</span><a href="https://fortune.com/europe/2024/05/17/arup-deepfake-fraud-scam-victim-hong-kong-25-million-cfo/" target="_blank" rel="noopener">Fortune ↗</a></div>
       <div class="panel case"><span class="yr">Ferrari · Italy · 2024</span><b>One question.</b><p>An executive got WhatsApp messages and a call in the CEO's cloned voice about a secret deal. He asked what book the CEO had recommended to him days earlier. The line went dead.</p><span class="out saved">Stopped</span><a href="https://fortune.com/2024/07/27/ferrari-deepfake-attempt-scammer-security-question-ceo-benedetto-vigna-cybersecurity-ai/" target="_blank" rel="noopener">Fortune ↗</a></div>
-      <div class="panel case"><span class="yr">WPP · UK · 2024</span><b>A fake CEO in a Teams meeting.</b><p>Scammers set up a meeting using a cloned voice and YouTube footage of the CEO to ask a senior leader to start a new business and hand over money and details.</p><span class="out saved">Stopped</span><a href="https://www.marketing-beat.co.uk/2024/05/13/mark-read-deepfake-wpp-ai/" target="_blank" rel="noopener">Marketing Beat ↗</a></div>
+      <div class="panel case"><span class="yr">Crypto company · 2025</span><b>"Your mic isn't working."</b><p>North Korean hackers held a Zoom call with deepfaked company leaders, told an employee their audio was broken, and sent a "Zoom extension" to fix it. It was malware. Security researchers caught it after it ran.</p><span class="out lost">Infected</span><a href="https://www.bleepingcomputer.com/news/security/north-korean-hackers-deepfake-execs-in-zoom-call-to-spread-mac-malware/" target="_blank" rel="noopener">BleepingComputer ↗</a></div>
       <div class="panel case"><span class="yr">LastPass · US · 2024</span><b>Wrong channel.</b><p>An employee got calls, texts and a voicemail in the CEO's deepfaked voice on WhatsApp. The employee ignored them because the CEO doesn't use WhatsApp for work, and reported it.</p><span class="out saved">Stopped</span><a href="https://blog.lastpass.com/posts/attempted-audio-deepfake-call-targets-lastpass-employee" target="_blank" rel="noopener">LastPass ↗</a></div>
     </div>
   </section>
@@ -108,12 +123,12 @@
 </div>
 <script>
 const STEPS=[
- {l:['channel'],lv:'New channel',h:'"New phone, save this number."',p:'Step one is always to move you off the systems that could check who he is. A new number, a personal app, a private email. Real executives get new phones too, which is exactly why it works.'},
- {l:['secrecy'],lv:'Secrecy',h:'"Keep this off Teams and email."',p:'Secrecy cuts you off from everyone who might say "that\'s weird." A confidential deal is the classic cover story. It also explains why nothing about it exists anywhere else.'},
- {l:['authority'],lv:'Authority',h:'Now there\'s a face. His face.',p:'The video is the closer, not the opener. Seeing the boss shuts down doubt. "Airport wifi" quietly explains any glitches and sets a clock.'},
- {l:['urgency'],lv:'Urgency',h:'"Before 10, or we lose our allocation."',p:'A deadline leaves no time to think, check, or ask. Real deadlines exist. Real deadlines also survive a five-minute phone call to verify.'},
- {l:['isolation'],lv:'Isolation',h:'"Don\'t loop in Finance yet."',p:'Flattery plus isolation. Jordan feels trusted, and the team whose sign-off would stop this is now off-limits. That line alone should end the call.'},
- {l:[],lv:'Outcome',h:'Five levers. Five minutes. Gone.',p:'None of the five levers needed a deepfake. The fake face just made each one easier to believe. Take any one lever away, with one call back to a number you already have, and the whole play falls apart.'}
+ {l:['authority'],lv:'Authority',h:'His face. His voice. His name in the From line.',p:'Everyone at Rhythmatic has seen the Exec at a town hall. A video message from him feels more real than any email could. Look closer at the address, though: rhythmatic-hq.com is not rhythmatic.com.'},
+ {l:['fear'],lv:'Fear',h:'"Attacks are getting more convincing."',p:'The cruelest part: the warning is true. Brian uses a real fear to sell a fake fix. A security message is the perfect cover, because doing what it says feels like the responsible thing to do.'},
+ {l:['urgency','channel'],lv:'Urgency + new channel',h:'"I need yours done before 10:00."',p:'Now it\'s personal. A text from an unknown number moves Jordan off the systems that could check who\'s asking, and a deadline leaves no time to check anyway. The flattery ("setting the example") makes saying no feel like letting the boss down.'},
+ {l:['isolation'],lv:'Skip the process',h:'"No need to open a ticket."',p:'Real IT never asks you to go around IT. Cutting out the help desk cuts out the one team that would say "we didn\'t send that." That line alone should stop the whole thing.'},
+ {l:[],lv:'The prompt',h:'The computer asked. The email had already answered.',p:'Windows warned her: unknown publisher. But the email told her to click Yes, so the warning felt like part of the instructions. Real company software comes from IT, already installed or in the company app store, with a known publisher.'},
+ {l:[],lv:'Outcome',h:'Five levers. Fifteen minutes. Inside.',p:'No money moved, so nobody noticed. That\'s what makes a download worse than a wire: it\'s the first step, not the last. What happens when an attacker sits inside a network for a few days is a different training (see Day Zero).'}
 ];
 let i=0;const evs=[...document.querySelectorAll('.ev')],ex=document.getElementById('explain'),lv=[...document.querySelectorAll('.lever')];
 function step(){if(i>=STEPS.length)return;const s=STEPS[i];evs.forEach(e=>e.classList.remove('cur'));evs[i].classList.add('on','cur');
@@ -123,6 +138,6 @@ function step(){if(i>=STEPS.length)return;const s=STEPS[i];evs.forEach(e=>e.clas
   if(i===STEPS.length){document.getElementById('next').disabled=true}
   evs[i-1].scrollIntoView({block:'nearest',behavior:'smooth'})}
 document.getElementById('next').addEventListener('click',step);
-document.getElementById('reset').addEventListener('click',()=>{i=0;evs.forEach(e=>e.classList.remove('on','cur'));lv.forEach(l=>l.classList.remove('lit'));document.getElementById('next').disabled=false;document.getElementById('cnt').textContent='0 / 6';ex.innerHTML='<div class="lv">Ready</div><h3>Ryan has his file. Jordan has a coffee.</h3><p>Press "Next message" to play the morning.</p>'});
+document.getElementById('reset').addEventListener('click',()=>{i=0;evs.forEach(e=>e.classList.remove('on','cur'));lv.forEach(l=>l.classList.remove('lit'));document.getElementById('next').disabled=false;document.getElementById('cnt').textContent='0 / 6';ex.innerHTML='<div class="lv">Ready</div><h3>Brian has his file. Jordan has a coffee.</h3><p>Press "Next message" to play the morning.</p>'});
 </script>
 </body></html>
