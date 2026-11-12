@@ -4,6 +4,16 @@
 <title>Day Zero · Inside the store</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Courier+Prime:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="style.css">
+<style>
+.view{position:relative;height:min(68vh,620px);min-height:380px;background:#0a0f15;border:1px solid var(--line);border-radius:14px;overflow:hidden;touch-action:none}
+.view canvas{display:block;width:100%;height:100%}
+.tag3d{position:absolute;left:0;top:0;transform:translate(-50%,-100%);pointer-events:none;font-family:var(--mono);font-size:12px;letter-spacing:.04em;white-space:nowrap;padding:3px 7px;border-radius:4px;background:rgba(13,18,24,.82);border:1px solid var(--line);color:var(--fg);opacity:0;transition:opacity .35s}
+.tag3d.show{opacity:1}
+.tag3d.warn{background:var(--amber);color:#1b1305;border-color:var(--amber);font-weight:700}
+.tag3d.bad{border-color:var(--alarm);color:#ffb3ad}
+.hint{position:absolute;right:12px;bottom:10px;font-family:var(--mono);font-size:12px;color:var(--muted);pointer-events:none}
+.fallback{padding:24px;color:var(--muted)}
+</style>
 </head><body>
 <div class="wrap">
   <nav class="chap"><a href="index.html"><b>1</b>One night</a><a href="store.html" aria-current="page"><b>2</b>Inside the store</a><a href="defense.html"><b>3</b>Damage control</a><a href="avoid.html"><b>4</b>Prevention</a><a href="you.html"><b>5</b>Your part</a></nav>
@@ -11,52 +21,244 @@
     <div class="kicker">Chapter 2 · Inside one store</div>
     <h1>A fridge is never just a fridge.</h1>
   </header>
-  <div class="stage scroll"><div id="store" style="min-width:720px"></div></div>
+  <div class="view" id="view"><div class="hint">Drag to look around · scroll or pinch to zoom</div></div>
   <div class="caption">
     <div aria-live="polite"><div class="stepnum" id="num"></div><h3 id="head"></h3><p id="body"></p></div>
     <div class="row"><button class="btn ghost" id="prev">◀ Back</button><button class="btn" id="next">Next ▶</button></div>
   </div>
-  <p class="note">The temperatures on the displays are illustrative. Reports describe the defrost settings being pushed to high temperatures, without giving exact readings.</p>
+  <p class="note">A simplified store for illustration. The temperatures on the displays are illustrative: reports describe the defrost settings being pushed to high temperatures without giving exact readings. <a href="store-2d.html">See the drawn version</a>.</p>
   <div class="next"><a href="index.html">◀ One night</a><a href="defense.html">Next: damage control ▶</a></div>
 </div>
-<script src="store.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-$('store').innerHTML=storeSVG();
+const view=$('view');
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const START={c1:-18,c2:3,c3:2}, END={c1:41,c2:47,c3:38};
+let ok=!!window.THREE;
+let renderer;
+try{ if(ok){renderer=new THREE.WebGLRenderer({antialias:true});} }catch(e){ok=false;}
+if(!ok){view.innerHTML='<div class="fallback">This 3D view needs WebGL, which this browser has turned off. <a href="store-2d.html">Open the drawn version of this chapter.</a></div>';return;}
+
+/* ---------- renderer, scene, camera ---------- */
+const L=c=>new THREE.Color(c).convertSRGBToLinear();
+renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+renderer.outputEncoding=THREE.sRGBEncoding;
+view.prepend(renderer.domElement);
+const scene=new THREE.Scene();
+scene.background=new THREE.Color('#0a0f15');
+scene.fog=new THREE.Fog('#0a0f15',30,60);
+const camera=new THREE.PerspectiveCamera(42,1,0.1,200);
+camera.position.set(15,13,18);
+const controls=new THREE.OrbitControls(camera,renderer.domElement);
+controls.target.set(0,1,-1);controls.enableDamping=true;controls.maxPolarAngle=Math.PI*0.47;controls.minDistance=5;controls.maxDistance=40;controls.enablePan=false;
+
+scene.add(new THREE.HemisphereLight(L('#9fb4cc'),L('#0c1015'),0.35));
+const key=new THREE.DirectionalLight('#ffffff',0.4);key.position.set(8,14,10);scene.add(key);
+
+const M=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({roughness:.8,metalness:.05},o,{color:L(c)}));
+const box=(w,h,d,mat,x,y,z,parent=scene)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);parent.add(m);return m;};
+
+/* canvas texture helper */
+function canvasTex(w,h,draw){const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');draw(g,w,h);const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;t.userData={c,g,draw};return t;}
+
+/* ---------- building ---------- */
+box(26,0.2,14,M('#1a222c'),0,-0.1,0);                       // floor
+const tiles=new THREE.GridHelper(26,26,'#1e2731','#18202a');tiles.scale.z=14/26;tiles.position.y=0.01;scene.add(tiles);
+box(26,4.2,0.3,M('#1b2430'),0,2.1,-7);                       // back wall
+box(0.3,4.2,14,M('#18202a'),-13,2.1,0);                      // left wall
+box(0.25,3.2,7,M('#202a36'),-6.5,1.6,-3.5);                  // office partition
+const sign=canvasTex(1024,128,(g,w,h)=>{g.fillStyle='#14324a';g.fillRect(0,0,w,h);g.fillStyle='#e8edf2';g.font='bold 72px "Rubik Mono One", Arial Black, sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText('SUPERMARCHÉ',w/2,h/2+4);});
+const signM=new THREE.Mesh(new THREE.PlaneGeometry(8,1),new THREE.MeshBasicMaterial({map:sign}));signM.position.set(3,3.6,-6.84);scene.add(signM);
+// ceiling light strips
+for(let x=-4;x<=10;x+=4.5){const l=box(3,0.06,0.3,new THREE.MeshBasicMaterial({color:'#4a5868'}),x,4.1,-1);}
+const roomLight=new THREE.PointLight('#a9c3dd',0.5,30);roomLight.position.set(3,5,2);scene.add(roomLight);
+
+/* ---------- products (instanced) ---------- */
+const PCOL=['#e86a5b','#f2c14e','#7cc4a8','#7fa7e8','#e8e3d8','#c78bd6','#f08a4b'];
+const productSets=[];
+function products(x0,x1,y,z,depth,h,seed){
+  const items=[];let x=x0,k=seed;
+  while(x<x1-0.15){const w=0.16+((k*37)%10)/60;for(let d=0;d<depth;d++)items.push([x+w/2,y+h/2,z+d*0.22,w,h]);x+=w+0.05;k++;}
+  const mesh=new THREE.InstancedMesh(new THREE.BoxGeometry(1,1,0.18),M('#ffffff',{roughness:.6}),items.length);
+  const dummy=new THREE.Object3D();const base=[];
+  items.forEach((it,i)=>{dummy.position.set(it[0],it[1],it[2]);dummy.scale.set(it[3],it[4],1);dummy.updateMatrix();mesh.setMatrixAt(i,dummy.matrix);
+    const c=L(PCOL[(seed+i*3)%PCOL.length]);base.push(c.clone());mesh.setColorAt(i,c);});
+  scene.add(mesh);return {mesh,base};
+}
+
+/* hollow cabinet: back, sides, top, base. Front left open for glass or air curtain. */
+function shell(g,w,h,d,col){const m=M(col);box(w,h,0.06,m,0,h/2,-d/2+0.03,g);box(0.08,h,d,m,-w/2+0.04,h/2,0,g);box(0.08,h,d,m,w/2-0.04,h/2,0,g);box(w,0.2,d,m,0,h-0.1,0,g);box(w,0.3,d,m,0,0.15,0,g);
+  box(w-0.2,h-0.6,0.02,M('#0f151c'),0,h/2,-d/2+0.07,g);}
+/* ---------- dry-goods aisles ---------- */
+[[1.5],[4.2]].forEach(([z])=>{const m=M('#2a3542');box(10,0.15,0.9,m,3,0.075,z);box(10,1.8,0.08,m,3,0.9,z);box(0.06,1.8,0.9,m,-2,0.9,z);box(0.06,1.8,0.9,m,8,0.9,z);
+  [0.15,0.65,1.15].forEach((y,j)=>{box(10,0.03,0.85,M('#3a4757'),3,y+0.02,z);products(-1.8,7.8,y+0.04,z-0.32,1,0.34,j+2);products(-1.8,7.8,y+0.04,z+0.32,1,0.34,j+5);});});
+
+/* ---------- case 1: glass-door freezer bank ---------- */
+const cases=[];
+function glassMat(){return new THREE.MeshStandardMaterial({color:'#bfe6ff',transparent:true,opacity:.22,roughness:.1,metalness:.1,emissive:'#3b8fc0',emissiveIntensity:.25});}
+(function(){const g=new THREE.Group();g.position.set(-2.4,0,-6.2);scene.add(g);
+  shell(g,4.6,2.4,1.1,'#202a36');
+  const glass=[];for(let i=0;i<3;i++){const d=box(1.4,2.0,0.04,glassMat(),-1.47+i*1.47,1.2,0.6,g);glass.push(d);box(0.05,0.5,0.06,M('#9aa8b8',{metalness:.6}),-1.47+i*1.47+0.55,1.2,0.65,g);}
+  const sets=[];[0.45,1.0,1.55].forEach((y,j)=>{box(4.3,0.03,0.8,M('#3a4757'),0,y-0.02,0.12,g);});
+  const light=new THREE.PointLight('#5fb8e6',1.0,4);light.position.set(0,1.3,0.3);g.add(light);
+  const wx=g.position.x, wz=g.position.z;
+  [0.45,1.0,1.55].forEach((y,j)=>sets.push(products(wx-2.1,wx+2.1,y,wz-0.15,2,0.34,j)));
+  cases.push({glass,light,sets,top:new THREE.Vector3(wx,2.4,wz+0.2)});})();
+
+/* ---------- case 2: open dairy multideck ---------- */
+(function(){const g=new THREE.Group();g.position.set(3.4,0,-6.1);scene.add(g);
+  shell(g,4.4,2.4,1.3,'#202a36');
+  box(4.4,0.6,0.08,M('#1b2430'),0,0.3,0.62,g);
+  [0.75,1.2,1.65].forEach(y=>box(4.2,0.03,0.85,M('#3a4757'),0,y-0.02,0.2,g));
+  const curtain=box(4.2,1.8,0.02,glassMat(),0,1.45,0.66,g);curtain.material.opacity=.1;
+  const light=new THREE.PointLight('#5fb8e6',1.0,4);light.position.set(0,1.6,0.6);g.add(light);
+  const wx=g.position.x,wz=g.position.z;const sets=[];
+  [0.75,1.2,1.65].forEach((y,j)=>sets.push(products(wx-2.0,wx+2.0,y,wz-0.1,3,0.3,j+3)));
+  cases.push({glass:[curtain],light,sets,top:new THREE.Vector3(wx,2.4,wz+0.3)});})();
+
+/* ---------- case 3: walk-in cold room ---------- */
+(function(){const g=new THREE.Group();g.position.set(9.8,0,-4.2);scene.add(g);
+  box(5,3,5,M('#26303c'),0,1.5,0,g);
+  for(let i=-2;i<=2;i++)box(0.04,3,0.02,M('#1c252f'),i,1.5,2.51,g);
+  box(1.6,2.4,0.12,M('#2f3b49'),-0.4,1.2,2.55,g);
+  const win=box(0.8,0.5,0.03,glassMat(),-0.4,1.8,2.62,g);
+  box(0.1,0.6,0.1,M('#9aa8b8',{metalness:.6}),0.25,1.2,2.65,g);
+  const light=new THREE.PointLight('#5fb8e6',0.6,3);light.position.set(-0.4,1.6,3);g.add(light);
+  cases.push({glass:[win],light,sets:[],top:new THREE.Vector3(11.3,2.2,-1.6)});})();
+
+/* ---------- controllers with live displays ---------- */
+const TEMP0=[-18,3,2], TEMP1=[41,47,38];
+function dispDraw(v,bad){return (g,w,h)=>{g.fillStyle='#071a12';g.fillRect(0,0,w,h);g.fillStyle=bad?'#ff6b5f':'#6fe0a8';g.font='bold 70px "Courier Prime", monospace';g.textAlign='center';g.textBaseline='middle';g.fillText(v+'°',w/2,h/2+4);};}
+const controllers=cases.map((c,i)=>{const grp=new THREE.Group();grp.position.copy(c.top);scene.add(grp);
+  const body=box(0.8,0.36,0.18,M('#1d2632'),0,0.18,0,grp);
+  const tex=canvasTex(256,128,dispDraw(TEMP0[i],false));
+  const d=new THREE.Mesh(new THREE.PlaneGeometry(0.5,0.25),new THREE.MeshBasicMaterial({map:tex}));d.position.set(-0.08,0.18,0.095);grp.add(d);
+  const led=new THREE.Mesh(new THREE.SphereGeometry(0.04,12,8),new THREE.MeshBasicMaterial({color:'#49b5a8'}));led.position.set(0.28,0.18,0.1);grp.add(led);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(0.62,0.025,8,48),new THREE.MeshBasicMaterial({color:'#f4b443'}));ring.position.set(0,0.18,0.12);ring.visible=false;grp.add(ring);
+  return {grp,tex,led,ring,anchor:c.top.clone().add(new THREE.Vector3(0,0.75,0))};});
+function setTemp(i,v,bad){const t=controllers[i].tex;const g=t.userData.g;dispDraw(v,bad)(g,256,128);t.needsUpdate=true;controllers[i].led.material.color.set(bad?'#ff5b4f':'#49b5a8');}
+
+/* ---------- back office: desk, system manager, modem, antenna ---------- */
+box(2.2,0.08,1,M('#2a3542'),-9.6,0.78,-3.6);[[-10.6,-4],[-8.6,-4],[-10.6,-3.2],[-8.6,-3.2]].forEach(([x,z])=>box(0.08,0.78,0.08,M('#2a3542'),x,0.39,z));
+box(0.6,0.4,0.05,M('#1d2632'),-9.6,1.05,-3.9);
+const mgr=new THREE.Group();mgr.position.set(-9.6,2.0,-6.75);scene.add(mgr);
+box(1.6,1.2,0.25,M('#1d2632'),0,0,0,mgr);
+const mgrTex=canvasTex(512,300,()=>{});
+function mgrDraw(v,bad){const g=mgrTex.userData.g;g.fillStyle='#071a12';g.fillRect(0,0,512,300);g.font='bold 44px "Courier Prime", monospace';g.fillStyle=bad?'#ff6b5f':'#6fe0a8';
+  ['CASE 01','CASE 02','ROOM 03'].forEach((n,i)=>{g.textAlign='left';g.fillText(n,30,80+i*80);g.textAlign='right';g.fillText(v[i]+'°',480,80+i*80);});mgrTex.needsUpdate=true;}
+mgrDraw(TEMP0,false);
+const mgrScreen=new THREE.Mesh(new THREE.PlaneGeometry(1.3,0.76),new THREE.MeshBasicMaterial({map:mgrTex}));mgrScreen.position.set(0,0.12,0.13);mgr.add(mgrScreen);
+const mgrRing=new THREE.Mesh(new THREE.TorusGeometry(1.1,0.03,8,48),new THREE.MeshBasicMaterial({color:'#f4b443'}));mgrRing.position.z=0.2;mgrRing.visible=false;mgr.add(mgrRing);
+const modem=new THREE.Group();modem.position.set(-11.8,3.0,-6.7);scene.add(modem);
+box(0.7,0.3,0.25,M('#1d2632'),0,0,0,modem);
+[-0.15,0.05].forEach(x=>{const l=new THREE.Mesh(new THREE.SphereGeometry(0.035,10,8),new THREE.MeshBasicMaterial({color:'#49b5a8'}));l.position.set(x,0,0.14);modem.add(l);});
+const modemRing=new THREE.Mesh(new THREE.TorusGeometry(0.5,0.025,8,40),new THREE.MeshBasicMaterial({color:'#f4b443'}));modemRing.position.z=0.15;modemRing.visible=false;modem.add(modemRing);
+box(0.06,1.6,0.06,M('#6b7a8c',{metalness:.5}),-11.8,5.0,-7);   // antenna mast on the roofline
+const dish=new THREE.Mesh(new THREE.ConeGeometry(0.25,0.3,16,1,true),M('#8a98a8',{side:THREE.DoubleSide}));dish.position.set(-11.8,5.8,-7);dish.rotation.x=-Math.PI/2.4;scene.add(dish);
+
+/* ---------- wires as tubes ---------- */
+function path(points){const cp=new THREE.CurvePath();for(let i=0;i<points.length-1;i++)cp.add(new THREE.LineCurve3(new THREE.Vector3(...points[i]),new THREE.Vector3(...points[i+1])));return cp;}
+const WIRES={};
+function wire(name,pts){const cp=path(pts);const mat=new THREE.MeshBasicMaterial({color:'#2c3846'});const mesh=new THREE.Mesh(new THREE.TubeGeometry(cp,Math.max(8,pts.length*12),0.035,6,false),mat);scene.add(mesh);WIRES[name]={cp,mat,mesh};}
+wire('net',[[-20,9,-14],[-15,8,-10],[-11.8,5.9,-7]]);
+wire('ant',[[-11.8,5.7,-6.95],[-11.8,3.15,-6.7]]);
+wire('modem',[[-11.45,3.0,-6.65],[-10.4,3.0,-6.65],[-10.4,2.6,-6.65]]);
+wire('bus',[[-8.8,2.5,-6.65],[-8.8,3.9,-6.65],[11.3,3.9,-6.65]]);
+wire('d1',[[cases[0].top.x,3.9,-6.65],[cases[0].top.x,3.9,cases[0].top.z],[cases[0].top.x,2.75,cases[0].top.z]]);
+wire('d2',[[cases[1].top.x,3.9,-6.65],[cases[1].top.x,3.9,cases[1].top.z],[cases[1].top.x,2.75,cases[1].top.z]]);
+wire('d3',[[11.3,3.9,-6.65],[11.3,3.9,cases[2].top.z],[11.3,2.6,cases[2].top.z]]);
+WIRES.net.mesh.visible=false;
+function wireState(names,color){for(const k in WIRES){WIRES[k].mat.color.set(names.includes(k)?color:'#2c3846');}}
+
+/* attack pulses travel along the hot route */
+const ROUTE=['net','ant','modem','bus','d1','d2','d3'];
+const pulses=[];const pulseGeo=new THREE.SphereGeometry(0.11,12,10);
+ROUTE.forEach((w,i)=>{for(let k=0;k<3;k++){const m=new THREE.Mesh(pulseGeo,new THREE.MeshBasicMaterial({color:'#ff5b4f'}));m.visible=false;scene.add(m);pulses.push({m,w,off:k/3});}});
+
+/* attacker: a glowing laptop in the dark, outside */
+const att=new THREE.Group();att.position.set(-20,9,-14);scene.add(att);
+box(1.2,0.06,0.8,M('#2a3542'),0,0,0,att);
+const scr=box(1.2,0.75,0.04,new THREE.MeshBasicMaterial({color:'#5a1a16'}),0,0.4,-0.38,att);scr.rotation.x=-0.2;
+const attGlow=new THREE.PointLight('#ff5b4f',0,6);attGlow.position.set(0,0.6,0.3);att.add(attGlow);att.visible=false;
+
+/* ---------- fire + smoke sprites ---------- */
+const flameTex=canvasTex(128,256,(g,w,h)=>{const gr=g.createRadialGradient(w/2,h*0.72,4,w/2,h*0.62,w*0.55);gr.addColorStop(0,'rgba(255,245,200,1)');gr.addColorStop(.25,'rgba(255,190,60,.95)');gr.addColorStop(.6,'rgba(255,90,30,.7)');gr.addColorStop(1,'rgba(255,60,20,0)');
+  g.fillStyle=gr;g.beginPath();g.moveTo(w/2,4);g.bezierCurveTo(w*0.95,h*0.45,w*0.95,h*0.95,w/2,h-4);g.bezierCurveTo(w*0.05,h*0.95,w*0.05,h*0.45,w/2,4);g.fill();});
+const smokeTex=canvasTex(128,128,(g,w,h)=>{const gr=g.createRadialGradient(w/2,h/2,2,w/2,h/2,w/2);gr.addColorStop(0,'rgba(120,128,138,.55)');gr.addColorStop(1,'rgba(120,128,138,0)');g.fillStyle=gr;g.fillRect(0,0,w,h);});
+const fires=[], smokes=[];
+[[cases[0].top.x-1.4,2.5,-5.7,1],[cases[0].top.x+1.5,2.5,-5.8,.8],[cases[1].top.x-1.3,2.5,-5.6,1.2],[cases[1].top.x+0.9,2.5,-5.7,1],[cases[1].top.x+1.8,2.5,-5.6,.7]].forEach(([x,y,z,s],i)=>{
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:flameTex,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true}));sp.position.set(x,y+0.7*s,z);sp.scale.set(0.8*s,1.6*s,1);sp.visible=false;scene.add(sp);fires.push({sp,s,y,ph:i*1.7});
+  for(let k=0;k<3;k++){const sm=new THREE.Sprite(new THREE.SpriteMaterial({map:smokeTex,depthWrite:false,transparent:true,opacity:0}));sm.position.set(x,y+1,z);sm.visible=false;scene.add(sm);smokes.push({sm,x,y,z,ph:k/3+i*0.13});}});
+const fireLight=new THREE.PointLight('#ff7a2a',0,10);fireLight.position.set(1,3.2,-5);scene.add(fireLight);
+
+/* ---------- labels projected from 3D ---------- */
+const TAGS={};
+function tag(id,text,pos,cls=''){const d=document.createElement('div');d.className='tag3d '+cls;d.textContent=text;view.appendChild(d);TAGS[id]={d,pos};}
+tag('ctrl1','Controller',controllers[0].anchor);tag('ctrl2','Controller',controllers[1].anchor);tag('ctrl3','Controller',controllers[2].anchor);
+tag('mgr','System manager',new THREE.Vector3(-9.6,2.95,-6.6));
+tag('badge','NO SECURITY UPDATES',new THREE.Vector3(-9.6,3.35,-6.6),'warn');
+tag('modem','Modem: remote access for repair techs',new THREE.Vector3(-11.8,3.5,-6.6));
+tag('att','Attacker, anywhere online',new THREE.Vector3(-20,10.1,-14),'bad');
+tag('fridge','Freezer doors',new THREE.Vector3(cases[0].top.x,0.2,-5.4));tag('dairy','Open dairy case',new THREE.Vector3(cases[1].top.x,0.2,-5.2));tag('room','Walk-in cold room',new THREE.Vector3(9.8,0.2,-1.4));
+const v3=new THREE.Vector3();
+function placeTags(){const w=view.clientWidth,h=view.clientHeight;for(const k in TAGS){const t=TAGS[k];v3.copy(t.pos).project(camera);const behind=v3.z>1;t.d.style.left=((v3.x+1)/2*w)+'px';t.d.style.top=((1-v3.y)/2*h)+'px';t.d.style.visibility=behind?'hidden':'visible';}}
+
+/* ---------- steps ---------- */
 const STEPS=[
- {h:'2 a.m. A supermarket, closed and quiet.',b:'The freezers hold at minus 18. The dairy case and the cold room hold just above zero. Nobody is in the building.'},
- {h:'Every case has its own controller.',b:'A small box watches the temperature and runs defrost cycles: short bursts of heat that melt ice off the coils. Harmless when it runs for a few minutes.',on:['c1','c2','c3'],call:['lblCtrl']},
- {h:'They all answer to one system manager.',b:'A box in the back office runs every case in the store. Change a setting there, and it changes on every case at once.',on:['mgr'],wires:['pBus','pD1','pD2','pD3']},
- {h:'A modem lets repair technicians connect remotely.',b:'A technician can fix a warm freezer at 3 a.m. without driving out. In many stores the system manager behind it was a legacy model that no longer received security updates.',on:['modem','mgr'],wires:['pModem'],call:['lblRemote'],badge:true},
- {h:'The attackers come in through that door.',b:'From anywhere online, they reach the modem, then the system manager, and change one thing: the defrost settings. The heaters switch on and stay on.',on:['att'],hot:['pNet','pModem','pBus','pD1','pD2','pD3'],badge:true,bad:true,heat:true},
- {h:'Product is lost. Then fires start.',b:'Fresh and frozen food heats past the point of saving. Heaters built to run for minutes run for hours. Across France, at least 15 fires broke out that night.',on:['att'],hot:['pNet','pModem','pBus','pD1','pD2','pD3'],badge:true,bad:true,heat:true,fire:true},
+ {h:'2 a.m. A supermarket, closed and quiet.',b:'The freezers hold at minus 18. The dairy case and the cold room hold just above zero. Nobody is in the building.',cam:[15,13,18],tgt:[0,1,-1],tags:['fridge','dairy','room']},
+ {h:'Every case has its own controller.',b:'A small box watches the temperature and runs defrost cycles: short bursts of heat that melt ice off the coils. Harmless when it runs for a few minutes.',cam:[3,5.5,5],tgt:[1.5,2.2,-5.5],tags:['ctrl1','ctrl2','ctrl3'],rings:true},
+ {h:'They all answer to one system manager.',b:'A box in the back office runs every case in the store. Change a setting there, and it changes on every case at once.',cam:[-4,6,6],tgt:[-3,2.6,-6],tags:['mgr','ctrl1','ctrl2'],wires:['bus','d1','d2','d3'],mgr:true},
+ {h:'A modem lets repair technicians connect remotely.',b:'A technician can fix a warm freezer at 3 a.m. without driving out. In many stores, the system manager behind it was a legacy model that no longer received security updates.',cam:[-6.5,5.2,3.5],tgt:[-10.5,3,-6.5],tags:['modem','mgr','badge'],wires:['ant','modem'],modem:true,mgr:true},
+ {h:'The attackers come in through that door.',b:'From anywhere online, they reach the modem, then the system manager, and change one thing: the defrost settings. The heaters switch on and stay on.',cam:[6,12,16],tgt:[-4,2.5,-5],tags:['att','badge','mgr'],hot:true},
+ {h:'Product is lost. Then fires start.',b:'Fresh and frozen food heats past the point of saving. Heaters built to run for minutes run for hours. Across France, at least 15 fires broke out that night.',cam:[4,5,6],tgt:[1.5,2,-5.5],tags:['fridge','dairy'],hot:true,fire:true},
 ];
-let i=0, raf=null;
-function setTemps(t){['c1','c2','c3'].forEach(k=>{const v=Math.round(START[k]+(END[k]-START[k])*t);$(k+'-t').textContent=v+'°';});
-  const s=document.querySelectorAll('#mgr .scr');const v=['c1','c2','c3'].map(k=>Math.round(START[k]+(END[k]-START[k])*t));
-  s[0].textContent='CASE 01 '+String(v[0]).padStart(4)+'°';s[1].textContent='CASE 02 '+String(v[1]).padStart(4)+'°';s[2].textContent='ROOM 03 '+String(v[2]).padStart(4)+'°';}
-function animateTemps(from,to){cancelAnimationFrame(raf);if(reduce){setTemps(to);return;}const t0=performance.now(),d=3000;
-  const f=now=>{const p=Math.min(1,(now-t0)/d);setTemps(from+(to-from)*p);if(p<1)raf=requestAnimationFrame(f);};raf=requestAnimationFrame(f);}
-let heated=0;
-function draw(){
-  const s=STEPS[i];
-  ['att','modem','mgr','c1','c2','c3'].forEach(id=>$(id).classList.toggle('on',(s.on||[]).includes(id)));
-  document.querySelectorAll('.storesvg .wire').forEach(w=>{w.classList.toggle('on',(s.wires||[]).includes(w.id));w.classList.toggle('hot',(s.hot||[]).includes(w.id));});
-  ['lblCtrl','lblRemote'].forEach(id=>$(id).classList.toggle('show',(s.call||[]).includes(id)));
-  $('badge').classList.toggle('show',!!s.badge);
-  ['c1','c2','c3','mgr'].forEach(id=>$(id).classList.toggle('bad',!!s.bad));
-  ['case1','case2','case3'].forEach(id=>$(id).classList.toggle('hot',!!s.heat));
-  $('fire').classList.toggle('show',!!s.fire);
-  const target=s.heat?1:0; if(target!==heated){animateTemps(heated,target);heated=target;}
+let step=0, heat=0, heatTarget=0;
+let camFrom=null, camTo=null, tgtFrom=null, tgtTo=null, camT=1;
+function goStep(i){step=i;const s=STEPS[i];
   $('num').textContent=`Step ${i+1} of ${STEPS.length}`;$('head').textContent=s.h;$('body').textContent=s.b;
   $('prev').disabled=i===0;$('next').textContent=i===STEPS.length-1?'↺ Start over':'Next ▶';
+  for(const k in TAGS)TAGS[k].d.classList.toggle('show',(s.tags||[]).includes(k));
+  controllers.forEach(c=>c.ring.visible=!!s.rings);mgrRing.visible=!!s.mgr&&!s.hot;modemRing.visible=!!s.modem;
+  if(s.hot)wireState(ROUTE,'#ff5b4f');else wireState(s.wires||[],'#5fb8e6');
+  WIRES.net.mesh.visible=!!s.hot;att.visible=!!s.hot;attGlow.intensity=s.hot?1.2:0;
+  pulses.forEach(p=>p.m.visible=!!s.hot&&!reduce);
+  heatTarget=s.hot?1:0;
+  fires.forEach(f=>f.sp.visible=!!s.fire);smokes.forEach(m=>m.sm.visible=!!s.fire);fireLight.intensity=s.fire?2.2:0;
+  camFrom=camera.position.clone();tgtFrom=controls.target.clone();camTo=new THREE.Vector3(...s.cam);tgtTo=new THREE.Vector3(...s.tgt);camT=reduce?1:0;
+  if(reduce){camera.position.copy(camTo);controls.target.copy(tgtTo);}
 }
-$('next').onclick=()=>{i=i===STEPS.length-1?0:i+1;draw();};
-$('prev').onclick=()=>{if(i>0){i--;draw();}};
-draw();
+$('next').onclick=()=>goStep(step===STEPS.length-1?0:step+1);
+$('prev').onclick=()=>{if(step>0)goStep(step-1);};
+
+/* ---------- heat application ---------- */
+const cold=L('#5fb8e6'), hotC=L('#ff7a3a'), spoil=L('#4a3428');
+const tmp=new THREE.Color();let lastShown=-1;
+function applyHeat(h){
+  cases.forEach(c=>{c.light.color.copy(cold).lerp(hotC,h);c.light.intensity=1+h*0.8;c.glass.forEach(g=>{g.material.emissive.copy(cold).lerp(hotC,h);g.material.emissiveIntensity=.25+h*.5;});
+    c.sets.forEach(s=>{s.base.forEach((b,i)=>{tmp.copy(b).lerp(spoil,h*0.55);s.mesh.setColorAt(i,tmp);});s.mesh.instanceColor.needsUpdate=true;});});
+  const vals=TEMP0.map((t,i)=>Math.round(t+(TEMP1[i]-t)*h));const key=vals.join(',')+(h>0.02);
+  if(key!==lastShown){lastShown=key;vals.forEach((v,i)=>setTemp(i,v,h>0.02));mgrDraw(vals,h>0.02);}
+}
+
+/* ---------- loop ---------- */
+function resize(){const w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<600?55:42;camera.updateProjectionMatrix();}
+window.addEventListener('resize',resize);resize();
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+let last=performance.now();
+function frame(now){const dt=Math.min(0.05,(now-last)/1000);last=now;const t=now/1000;
+  if(camT<1){camT=Math.min(1,camT+dt/1.6);const e=ease(camT);camera.position.lerpVectors(camFrom,camTo,e);controls.target.lerpVectors(tgtFrom,tgtTo,e);}
+  if(heat!==heatTarget){const sp=heatTarget>heat?dt/3.5:dt/0.8;heat=heatTarget>heat?Math.min(heatTarget,heat+sp):Math.max(heatTarget,heat-sp);applyHeat(heat);}
+  if(!reduce){
+    pulses.forEach(p=>{if(!p.m.visible)return;const u=((t*0.6+p.off)%1);p.m.position.copy(WIRES[p.w].cp.getPointAt(u));});
+    fires.forEach(f=>{if(!f.sp.visible)return;const k=1+0.12*Math.sin(t*13+f.ph)+0.08*Math.sin(t*21+f.ph*2);f.sp.scale.set(0.8*f.s*(2-k),1.6*f.s*k,1);});
+    smokes.forEach(m=>{if(!m.sm.visible)return;const u=(t*0.25+m.ph)%1;m.sm.position.set(m.x+Math.sin(u*6+m.ph)*0.3,m.y+0.8+u*3,m.z);const s=0.6+u*1.6;m.sm.scale.set(s,s,1);m.sm.material.opacity=0.5*(1-u);});
+    if(fireLight.intensity>0)fireLight.intensity=2+0.6*Math.sin(t*17);
+    controllers.forEach(c=>{if(c.ring.visible)c.ring.material.opacity=1;});
+  }
+  controls.update();renderer.render(scene,camera);placeTags();requestAnimationFrame(frame);}
+goStep(0);requestAnimationFrame(frame);
 })();
 </script>
 </body></html>
