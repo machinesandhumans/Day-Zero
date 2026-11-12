@@ -38,10 +38,13 @@
 </head><body>
 <div class="wrap">
   <nav class="chap"><a href="index.html"><b>1</b>The mask</a><a href="sources.html"><b>2</b>The ingredients</a><a href="play.html"><b>3</b>The play</a><a href="tells.html" aria-current="page"><b>4</b>The tells</a><a href="defend.html"><b>5</b>Call back</a></nav>
-  <header>
+  <header class="hsplit">
+    <div>
     <div class="kicker">Chapter 4 · The tells</div>
     <h1>Listen to the ask, not the face.</h1>
     <p class="lead">You won't win a staring contest with a computer. You will win by noticing what the call is trying to get you to do. Here's the Exec's call to Jordan, line by line. Flag every line that should make you stop.</p>
+    </div>
+    <figure class="photo"><img src="img/jordan-doubt.jpg" alt="Jordan pausing at her desk, hand on chin, unconvinced"><figcaption>9:05 AM. Something about that call.</figcaption></figure>
   </header>
 
   <section class="game">
@@ -75,13 +78,13 @@
 </div>
 <script>
 const L=[
- {q:'"Morning! Hope the new role\'s treating you well."',red:false,why:'Just small talk. A real boss says this. So does a good scammer: warm and normal comes first.'},
+ {q:'"Morning, Jordan! How was the supplier summit?"',red:false,why:'Small talk. A real boss says this. So does a scammer who read Jordan\'s post about the summit. Warm and normal comes first, and it proves nothing.'},
  {q:'"I\'m on my personal phone, my work laptop\'s locked up."',red:true,why:'New channel. Moving you off company systems removes the ways you\'d normally confirm who\'s calling.'},
- {q:'"We\'re closing an acquisition. It\'s confidential until Friday."',red:true,why:'Secrecy. Confidential deals are real, but they still go through normal approvals. "Secret" is a reason to follow the process, not skip it.'},
- {q:'"Finance usually handles this, but I need you to do it personally."',red:true,why:'Skipping the normal process. When someone asks you to step around the usual path, the path is usually the thing that would catch them.'},
- {q:'"Can you get the payment out by 10? They walk if it\'s late."',red:true,why:'Urgency. A deadline is designed to stop you from checking. Real deadlines survive a five-minute callback.'},
+ {q:'"We\'re switching chip suppliers. It\'s confidential until it\'s signed."',red:true,why:'Secrecy. Confidential deals are real, but they still go through normal approvals. "Secret" is a reason to follow the process, not skip it.'},
+ {q:'"Normally Finance signs off on new suppliers, but I need you to push this one through."',red:true,why:'Skipping the normal process. When someone asks you to step around the usual path, the path is usually the thing that would catch them.'},
+ {q:'"Can you get the deposit out by 10? We lose our allocation if it\'s late."',red:true,why:'Urgency. A deadline is designed to stop you from checking. Real deadlines survive a five-minute callback.'},
  {q:'"Thanks for jumping on this, I really appreciate it."',red:false,why:'Normal. Politeness isn\'t a warning sign by itself.'},
- {q:'"Don\'t mention it to anyone yet, including your manager."',red:true,why:'Isolation. Cutting out your manager cuts out the person most likely to say "wait, what?"'},
+ {q:'"Don\'t mention it to anyone yet, not even Finance."',red:true,why:'Isolation. Cutting out Finance cuts out the second approval, which is the one step most likely to say "wait, what?"'},
  {q:'"No time to call me back, I\'m about to board."',red:true,why:'Refusing verification. This is the biggest flag of all. A real boss can wait five minutes. A fake one can\'t afford to.'}
 ];
 const box=document.getElementById('lines'),wrap=document.querySelector('.game');

@@ -15,6 +15,7 @@
 .choice[aria-pressed="true"]{border-color:var(--amber)}
 .result{border-radius:12px;padding:16px;display:none;flex-direction:column;gap:6px;border:1px solid}
 .result.show{display:flex}
+.result img{width:100%;border-radius:8px;display:block;margin-bottom:6px}
 .result.bad{border-color:var(--alarm);background:#21161a}
 .result.meh{border-color:var(--amber);background:#221b0e}
 .result.good{border-color:var(--ok);background:#11221f}
@@ -52,15 +53,15 @@
   <section class="decide">
     <div style="display:flex;flex-direction:column;gap:12px">
       <div class="callframe"><img src="img/exec.jpg" alt="The Exec on a video call"><div class="callbar"><span class="who"><span class="dot"></span>The Exec · Video call</span><span>04:12</span></div></div>
-      <p class="lead"><b>Your turn.</b> The Exec is on video. He needs a supplier's bank details changed before end of day, and he'd rather you didn't mention it to anyone. What do you do?</p>
+      <p class="lead"><b>Your turn. You're Jordan.</b> The Exec is on video. He needs a supplier's bank details changed before end of day, and he'd rather you didn't mention it to anyone. What do you do?</p>
     </div>
     <div class="choices" aria-live="polite">
       <button class="choice" data-c="bad"><span class="k">A</span><span>Do it. It's literally his face, and he's the Exec.</span></button>
       <button class="choice" data-c="meh"><span class="k">B</span><span>Ask him something only the real Exec would know.</span></button>
       <button class="choice" data-c="good"><span class="k">C</span><span>Say you'll call right back. Hang up, and dial his number from the company directory.</span></button>
-      <div class="result bad" id="r-bad"><span class="h">That's the $25 million answer</span><p>Changed bank details are one of the most common ways company money disappears. The next real invoice gets paid straight to Ryan, and nobody notices for weeks. The face was the only evidence you had, and the face is the one thing a deepfake gets right.</p></div>
+      <div class="result bad" id="r-bad"><img src="img/jordan-uhoh.jpg" alt="Jordan realizing the payment went to a scammer"><span class="h">That's the $25 million answer</span><p>Changed bank details are one of the most common ways company money disappears. The next real invoice gets paid straight to Ryan, and nobody notices for weeks. The face was the only evidence you had, and the face is the one thing a deepfake gets right.</p></div>
       <div class="result meh" id="r-meh"><span class="h">Good instinct. Not enough on its own.</span><p>A question saved Ferrari. But you're still on the caller's line, and a well-researched scammer may know the answer, or say "I can't talk about that now" and push harder. Use the question as a warning light, then do C anyway.</p></div>
-      <div class="result good" id="r-good"><span class="h">That's the move</span><p>If it's really him, you've cost him two minutes and he'll likely respect it. If it's not, the scam is over: Ryan can't answer a phone he doesn't own. Then report it, even if it turns out to be nothing.</p></div>
+      <div class="result good" id="r-good"><img src="img/jordan-callback.jpg" alt="Jordan on her desk phone, calling the Exec back on his directory number"><span class="h">That's the move</span><p>If it's really him, you've cost him two minutes and he'll likely respect it. If it's not, the scam is over: Ryan can't answer a phone he doesn't own. Then report it, even if it turns out to be nothing.</p></div>
     </div>
   </section>
 
