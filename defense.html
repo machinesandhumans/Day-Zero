@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Day Zero · Damage control</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Courier+Prime:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+.top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,360px);gap:24px;align-items:end}
+@media (max-width:860px){.top{grid-template-columns:minmax(0,1fr)}}
+.gauge{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.gauge .k{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.gauge .v{font-family:var(--display);font-size:34px;line-height:1.05;color:var(--alarm);font-variant-numeric:tabular-nums}
+.gbar{position:relative;height:14px;border-radius:7px;background:var(--panel2);border:1px solid var(--line);overflow:hidden}
+.gbar .fill{position:absolute;inset:0 auto 0 0;width:0;background:rgba(255,91,79,.85);transition:width .2s linear}
+.gscale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.gauge .s{font-size:14px;color:var(--fg)}
+.gauge .s.ok{color:var(--cold)}
+#flow{min-width:1000px}
+#flow text{font-family:var(--mono);fill:var(--fg)}
+.lane-bg{fill:var(--panel2)}
+.lane-lbl{font-size:13px;fill:var(--muted);letter-spacing:.06em}
+.tick{stroke:var(--line)} .tick-lbl{font-size:12px;fill:var(--muted)}
+.band{font-size:12px;letter-spacing:.12em;fill:var(--amber)}
+.bandline{stroke:var(--amber);stroke-width:2}
+.node rect{fill:var(--bg);stroke:#3a4757;stroke-width:2;transition:fill .3s,stroke .3s}
+.node text{font-size:11.5px;fill:var(--muted);transition:fill .3s}
+.node{cursor:pointer}
+.node.lit rect{stroke:var(--cold);fill:#13283a}
+.node.lit text{fill:var(--fg)}
+.node.hand.lit rect{stroke:var(--amber);fill:#2e2410}
+.node.sel rect{stroke-width:4}
+.node .hicon{fill:var(--amber);font-size:13px}
+.link{fill:none;stroke:#2c3846;stroke-width:2;transition:stroke .3s}
+.link.lit{stroke:var(--cold)}
+#head{stroke:var(--amber);stroke-width:2}
+#headLbl{fill:var(--amber);font-size:13px;font-weight:700}
+.heatzone{fill:var(--alarm);opacity:.08}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;border:2px solid}
+.detail{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
+@media (max-width:760px){.detail{grid-template-columns:minmax(0,1fr)}}
+.detail .role{font-family:var(--mono);font-size:13px;color:var(--cold);letter-spacing:.08em;text-transform:uppercase}
+.detail h3{margin:4px 0 8px;font-size:22px;line-height:1.3;font-weight:600}
+.faces{border-left:3px solid var(--amber);padding:6px 12px;color:var(--muted);font-size:15px;align-self:start}
+.faces b{color:var(--amber);display:block;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.vs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:720px){.vs{grid-template-columns:minmax(0,1fr)}}
+.vs div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.vs .dc{border-color:#6a2a26}.vs .pv{border-color:#2a5a52}
+.vs h3{margin:0;font-family:var(--mono);font-size:14px;letter-spacing:.08em;text-transform:uppercase}
+.vs .dc h3{color:var(--alarm)}.vs .pv h3{color:var(--ok)}
+.vs ul{margin:0;padding-left:18px;color:var(--muted);font-size:15px;display:flex;flex-direction:column;gap:4px}
+</style>
+</head><body>
+<div class="wrap">
+  <nav class="chap"><a href="index.html"><b>1</b>One night</a><a href="store.html"><b>2</b>Inside the store</a><a href="defense.html" aria-current="page"><b>3</b>Damage control</a><a href="avoid.html"><b>4</b>Prevention</a><a href="you.html"><b>5</b>Your part</a></nav>
+  <div class="top">
+    <header>
+      <div class="kicker">Chapter 3 · What if security caught it live?</div>
+      <h1>Damage control</h1>
+      <p class="lead">By the time the first alarm sounds, a script has already changed the settings in every store. Nothing here prevents the attack or fixes it. It's a race to pull the plug before the food is lost, and most of that race is people, not computers.</p>
+    </header>
+    <div class="gauge" aria-live="polite">
+      <div class="k">Fridges heating in</div>
+      <div class="v" id="gStores">700 stores</div>
+      <div class="k">Heating for <span id="gTime" style="color:var(--fg)">0 min</span></div>
+      <div class="gbar"><div class="fill" id="gFill"></div></div>
+      <div class="gscale"><span>0</span><span>1 hour</span><span>2 hours: chilled food thrown out</span></div>
+      <div class="s" id="gMsg">Food still cold. Every minute counts.</div>
+    </div>
+  </div>
+  <div class="row"><button class="btn" id="play">▶ Play the first hour</button><button class="btn ghost" id="reset">↺ Reset</button><div class="legend"><span><i style="border-color:var(--cold)"></i>Done at a screen</span><span><i style="border-color:var(--amber)"></i>✋ Done by hand, in a store</span></div></div>
+  <div class="stage scroll"><svg id="flow" viewBox="0 0 1290 580" role="img" aria-label="Swimlane map of the first hour of damage control, with six teams across a sixty-minute timeline"></svg></div>
+  <div class="detail" aria-live="polite">
+    <div><div class="role" id="dRole"></div><h3 id="dHead"></h3><p id="dBody"></p></div>
+    <div class="faces"><b>What they're up against</b><span id="dFace"></span></div>
+  </div>
+
+  <section style="display:flex;flex-direction:column;gap:12px">
+    <h2>Damage control is not a fix</h2>
+    <div class="vs">
+      <div class="dc"><h3>Damage control: one night</h3><ul>
+        <li>Dozens of people woken at 2 a.m.</li>
+        <li>Hundreds of phone calls, store by store</li>
+        <li>Heaters switched off by hand</li>
+        <li>Food still lost in stores reached too late</li>
+        <li>The weak point is still there in the morning</li></ul></div>
+      <div class="pv"><h3>Prevention: months earlier</h3><ul>
+        <li>A list of every connected device</li>
+        <li>A risk rating: online and out of support goes to the top</li>
+        <li>A budget line to replace it</li>
+        <li>Remote access behind a second sign-in step</li>
+        <li>An alert on setting changes</li></ul></div>
+    </div>
+    <div class="row"><a class="btn" href="avoid.html" style="text-decoration:none">See the prevention side ▶</a></div>
+  </section>
+
+  <p class="note">A "what if" built on the real attack: nothing reported says it was caught live. The response times are realistic estimates for 2 a.m. How fast a case warms depends on the equipment. The two-hour line follows US food-safety guidance that perishable food left above 40°F (4°C) for more than two hours should be thrown out (<a href="https://www.fsis.usda.gov/news-events/news-press-releases/usda-urges-consumers-keep-clear-danger-zone-summer" target="_blank" rel="noopener">USDA</a>).</p>
+  <div class="next"><a href="store.html">◀ Inside the store</a><a href="avoid.html">Next: prevention ▶</a></div>
+</div>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const LANES=['Security Operations','Incident commander','Network team','Store staff','Threat hunter','Vendor + authorities'];
+const X=m=>210+m*15.5, LY=i=>96+i*76, W=136, H=50, END=60;
+const N=[
+ {id:'a',l:0,m:0,t:['Alarms from','hundreds of stores'],role:'SOC analyst · minute 0',h:'A wall of refrigeration alarms lands at once.',b:'The settings have already been changed in every store. The analyst on the night shift sees temperature alarms pouring in from all over the country.',f:'Alarms like this fire every day: bad sensors, power blips, a door left open. Most are nothing.'},
+ {id:'b',l:0,m:10,t:['Confirmed attack.','Page the on-call'],role:'SOC analyst · minute 10',h:'Same setting, same connection, same few minutes. This is an attack.',b:'The logs show the defrost settings were changed through the stores\' remote access. The analyst pages the on-call incident commander.',f:'They have to be sure enough to wake everyone up. Ten minutes in, the heaters have been running the whole time.'},
+ {id:'k',l:5,m:24,t:['Call the equipment','maker\'s hotline'],role:'Vendor · minute 24',h:'Wake up the equipment maker.',b:'Is there a way to push safe settings to every unit at once? Is this a known weakness?',f:'The person on the 24-hour line may not know. Getting to their security team can take hours.'},
+ {id:'c',l:1,m:24,t:['Commander on','the bridge call'],role:'Incident commander · minute 24',h:'One priority: stop the heat.',b:'The commander runs one call for every team. Investigation can wait. The only goal tonight is getting the heaters off before food is lost and fires start.',f:'Half the people on the call were asleep a few minutes ago. Nobody has the full picture.'},
+ {id:'g',l:3,m:28,t:['✋ Call key','holders','hand'],hand:1,role:'Regional managers · minute 28',h:'Find someone who can get into each store.',b:'Most stores are closed and empty. Managers work down a phone list of key holders, night staff and security guards, one store at a time.',f:'700 stores and a phone list. This is the slowest part of the whole response, and it\'s all human.'},
+ {id:'i',l:4,m:30,t:['Save the logs','before reboots'],role:'Threat hunter · minute 30',h:'Preserve the evidence.',b:'Before anyone switches anything off, the hunter saves the connection logs and copies of the changed settings.',f:'Store staff are about to power things down, and some of the evidence goes with it. Speed and evidence pull in opposite directions.'},
+ {id:'c2',l:1,m:33,t:['Decision: cut all','remote access'],role:'Incident commander · minute 33',h:'"Shut remote access to every store. Now."',b:'Cutting access stops the attackers from changing anything else. It also means the fix can\'t be pushed remotely. Stores have to do it by hand.',f:'There\'s no good option, only a less bad one, decided in seconds with half the facts.'},
+ {id:'e',l:2,m:36,t:['Closing access,','store by store'],role:'Network team · minute 36',h:'There\'s no single off switch.',b:'Each store has its own modem. The team blocks what it can centrally and works through the rest in batches.',f:'Every connection still open is one the attackers can use again.'},
+ {id:'h',l:3,m:40,t:['✋ Pull the plug:','heaters off'],hand:1,role:'Store staff · minute 40 onward',h:'Someone walks to the back office and switches it off.',b:'In the first stores reached, staff follow instructions over the phone: switch the system manager off, put each case into manual cooling, cut power to the defrost heaters.',f:'They aren\'t technicians, it\'s the middle of the night, and they\'re being talked through it by someone they\'ve never met.'},
+ {id:'j',l:4,m:45,t:['Watch for','new changes'],role:'Threat hunter · minute 45',h:'Watch for the attackers coming back.',b:'While the network team closes connections, the hunter watches the rest for any new setting change.',f:'Nobody knows yet how they got in. That answer takes days, not minutes.'},
+ {id:'n',l:2,m:50,t:['Last connection','closed'],role:'Network team · minute 50',h:'The attackers are locked out.',b:'The last remote connection is closed. Nothing new can be changed. The heat that\'s already on still has to be switched off by hand, store by store.',f:'Locking the door doesn\'t cool the fridges. That job is still in people\'s hands.'},
+ {id:'m',l:3,m:52,t:['✋ Move food, check','for smoke'],hand:1,role:'Store staff · minute 52 onward',h:'Save what can be saved. Watch for fire.',b:'Staff move product into cold rooms that still work, log temperatures for the food-safety team and call the fire service at the first sign of smoke.',f:'Stores nobody has reached yet are still heating. For them, the two-hour clock keeps running.'},
+ {id:'l',l:5,m:60,t:['Days later: root','cause, report'],role:'Investigation · the following days',h:'Find out how they got in, and warn everyone else.',b:'Over the next days, investigators trace the attack to system managers running old firmware that no longer got security updates. The national cyber agency and other retailers get the details.',f:'Damage control bought time. The weak point is still in every store until the hardware is replaced.'},
+];
+N.forEach(n=>{if(n.t.length>2)n.t=n.t.slice(0,2);});
+const byId=Object.fromEntries(N.map(n=>[n.id,n]));
+const L=[['a','b'],['b','c'],['b','k'],['c','g'],['c','i'],['c','c2'],['c2','e'],['g','h'],['h','m'],['i','j'],['e','n'],['j','l'],['k','l']];
+let s='';
+s+=`<text class="band" x="${X(0)}" y="22">HEATERS ON IN EVERY STORE FROM MINUTE 0</text><line class="bandline" x1="${X(0)}" y1="30" x2="${X(60)}" y2="30" style="stroke:var(--alarm)" opacity=".7"/>`;
+LANES.forEach((n,i)=>{s+=`<rect class="lane-bg" x="0" y="${LY(i)}" width="1290" height="${H+20}" opacity="${i%2?0.5:1}"/><text class="lane-lbl" x="14" y="${LY(i)+H/2+14}">${n}</text>`;});
+s+=`<rect class="heatzone" x="${X(0)}" y="64" width="${X(60)-X(0)}" height="${LY(5)+H+20-64}"/>`;
+for(let m=0;m<=60;m+=10){s+=`<line class="tick" x1="${X(m)}" y1="70" x2="${X(m)}" y2="${LY(5)+H+20}" stroke-dasharray="2 6"/><text class="tick-lbl" x="${X(m)}" y="62" text-anchor="middle">${m}:00</text>`;}
+L.forEach(([a,b])=>{const A=byId[a],B=byId[b];const x1=X(A.m)+W,y1=LY(A.l)+10+H/2,x2=X(B.m),y2=LY(B.l)+10+H/2;const mx=(Math.min(x1,x2-8)+x2)/2;
+  s+=`<path class="link" data-b="${b}" d="M${x1} ${y1} C${Math.max(mx,x1+20)} ${y1} ${mx} ${y2} ${x2-2} ${y2}"/>`;});
+N.forEach(n=>{const x=X(n.m),y=LY(n.l)+10;s+=`<g class="node${n.hand?' hand':''}" id="n-${n.id}" tabindex="0" role="button" aria-label="Minute ${n.m}: ${n.h.replace(/"/g,'')}"><rect x="${x}" y="${y}" width="${W}" height="${H}" rx="8"/><text x="${x+10}" y="${y+21}">${n.t[0]}</text><text x="${x+10}" y="${y+37}">${n.t[1]}</text></g>`;});
+s+=`<line id="head" x1="${X(0)}" y1="36" x2="${X(0)}" y2="${LY(5)+H+20}"/><text id="headLbl" x="${X(0)}" y="${LY(5)+H+38}" text-anchor="middle">0:00</text>`;
+$('flow').innerHTML=s;
+
+let cur=0, raf=null;
+function show(id){const n=byId[id];$('dRole').textContent=n.role;$('dHead').textContent=n.h;$('dBody').textContent=n.b;$('dFace').textContent=n.f;
+  document.querySelectorAll('.node').forEach(g=>g.classList.toggle('sel',g.id==='n-'+id));}
+function setTime(m){cur=m;
+  N.forEach(n=>$('n-'+n.id).classList.toggle('lit',n.m<=m+0.001));
+  document.querySelectorAll('.link').forEach(p=>p.classList.toggle('lit',byId[p.dataset.b].m<=m+0.001));
+  const x=X(m);$('head').setAttribute('x1',x);$('head').setAttribute('x2',x);$('headLbl').setAttribute('x',x);$('headLbl').textContent=Math.floor(m)+':00';
+  $('gTime').textContent=Math.floor(m)+' min';$('gFill').style.width=(m/120*100)+'%';
+  const msg=$('gMsg');msg.classList.remove('ok');
+  if(m<10)msg.textContent='Food still cold. Nobody knows yet.';
+  else if(m<40)msg.textContent='Cases warming in every store. No one has touched a single fridge.';
+  else{msg.textContent='Heaters off only in the stores someone has reached. Everywhere else, still heating.';msg.classList.add('ok');}
+  const latest=N.filter(n=>n.m<=m+0.001).sort((a,b)=>a.m-b.m).pop();if(latest&&raf)show(latest.id);}
+const stopBtn=()=>{cancelAnimationFrame(raf);raf=null;$('play').textContent='▶ Play the first hour';};
+function play(){stopBtn();if(cur>=END)cur=0;
+  if(reduce){setTime(END);show('l');return;}
+  const dur=26000,t0=performance.now()-cur/END*dur;$('play').textContent='❚❚ Pause';
+  const f=now=>{const m=Math.min(END,(now-t0)/dur*END);setTime(m);if(m<END&&raf)raf=requestAnimationFrame(f);else stopBtn();};
+  raf=requestAnimationFrame(f);}
+$('play').onclick=()=>{raf?stopBtn():play();};
+$('reset').onclick=()=>{stopBtn();setTime(0);show('a');};
+N.forEach(n=>{const g=$('n-'+n.id);const go=()=>{stopBtn();setTime(Math.max(cur,n.m));show(n.id);};g.onclick=go;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};});
+setTime(END);show('h');
+})();
+</script>
+</body></html>

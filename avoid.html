@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Day Zero · Avoidable</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Courier+Prime:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:680px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.item{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;text-align:left;transition:border-color .2s}
+.item.sel{border-color:var(--amber)}
+.item .n{font-family:var(--display);font-size:18px;color:#1b1305;background:var(--amber);width:34px;height:34px;border-radius:50%;display:grid;place-items:center}
+.item b{display:block;font-size:17px;margin-bottom:4px}
+.item span{color:var(--muted);font-size:15px}
+</style>
+</head><body>
+<div class="wrap">
+  <nav class="chap"><a href="index.html"><b>1</b>One night</a><a href="store.html"><b>2</b>Inside the store</a><a href="defense.html"><b>3</b>Damage control</a><a href="avoid.html" aria-current="page"><b>4</b>Prevention</a><a href="you.html"><b>5</b>Your part</a></nav>
+  <header>
+    <div class="kicker">Chapter 4 · Prevention</div>
+    <h1>The boring work that would have stopped it</h1>
+    <p class="lead">Damage control is a frantic hour at 2 a.m. Prevention happens on an ordinary workday, months earlier. It starts with a risk assessment: list every connected device, then ask two questions about each one.</p>
+  </header>
+  <div class="stage scroll"><svg id="matrix" viewBox="0 0 900 460" style="min-width:640px" role="img" aria-label="Risk matrix: devices placed by whether they are reachable from the internet and whether they still get security updates. The fridge system manager is reachable and unsupported, so it lands in Fix first."></svg></div>
+  <p class="note">Example devices in a typical store, placed for illustration.</p>
+  <h2>Then shut the doors</h2>
+  <p class="lead">Tap a number on the store, or a card below.</p>
+  <div class="stage scroll"><div id="store" style="min-width:720px"></div></div>
+  <div class="grid2" id="cards">
+    <button class="item" data-k="1"><span class="n">1</span><span><b>Know what you have</b>Keep a list of every connected device in every store, including the ones a vendor installed and nobody in IT has seen. You can't protect what you don't know about.</span></button>
+    <button class="item" data-k="2"><span class="n">2</span><span><b>Replace what can't be updated</b>The maker said many affected units were legacy products with outdated firmware. Anything that is online and out of support goes to the top of the list, with a budget and a date.</span></button>
+    <button class="item" data-k="3"><span class="n">3</span><span><b>Lock the repair door</b>Remote access for technicians goes through one secured gateway with a second sign-in step, not straight to the equipment. That also gives you one switch to turn it all off.</span></button>
+    <button class="item" data-k="4"><span class="n">4</span><span><b>Watch settings, and rehearse</b>Alert on unusual setting changes, not only temperature alarms. Then practice the 2 a.m. call: who decides, who phones the stores, who has the keys.</span></button>
+  </div>
+  <div class="next"><a href="defense.html">◀ Damage control</a><a href="you.html">Next: your part ▶</a></div>
+</div>
+<script src="store.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+$('store').innerHTML=storeSVG();
+const svg=document.querySelector('.storesvg');
+const LOCKS={1:{x:160,y:470,on:['modem','mgr','c1','c2','c3']},2:{x:250,y:300,on:['mgr'],badge:true},3:{x:290,y:232,on:['modem'],wires:['pModem']},4:{x:700,y:176,on:['c1','c2','c3'],wires:['pBus','pD1','pD2','pD3']}};
+for(const k in LOCKS){const L=LOCKS[k];const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('class','lock');g.setAttribute('data-k',k);g.setAttribute('tabindex','0');g.setAttribute('role','button');g.setAttribute('aria-label','Door '+k);
+  g.innerHTML=`<circle cx="${L.x}" cy="${L.y}" r="20"/><text x="${L.x}" y="${L.y+7}" text-anchor="middle">${k}</text>`;svg.appendChild(g);}
+function pick(k){const L=LOCKS[k];
+  ['att','modem','mgr','c1','c2','c3'].forEach(id=>$(id).classList.toggle('on',L.on.includes(id)));
+  document.querySelectorAll('.storesvg .wire').forEach(w=>w.classList.toggle('on',(L.wires||[]).includes(w.id)));
+  $('badge').classList.toggle('show',!!L.badge);
+  document.querySelectorAll('.lock').forEach(l=>l.classList.toggle('sel',l.dataset.k==k));
+  document.querySelectorAll('.item').forEach(c=>c.classList.toggle('sel',c.dataset.k==k));}
+document.querySelectorAll('.lock,.item').forEach(el=>{el.addEventListener('click',()=>pick(el.dataset.k));el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(el.dataset.k);}});});
+pick('1');
+})();
+/* risk matrix */
+(function(){
+const m=document.getElementById('matrix');const L=150,T=40,W=640,H=360,cx=L+W/2,cy=T+H/2;
+let q='';
+const quad=(x,y,fill,label,sub,col)=>`<rect x="${x}" y="${y}" width="${W/2-4}" height="${H/2-4}" rx="8" fill="${fill}"/><text x="${x+14}" y="${y+26}" font-family="Rubik Mono One,Arial Black,sans-serif" font-size="15" fill="${col}">${label}</text><text x="${x+14}" y="${y+44}" font-family="IBM Plex Sans,sans-serif" font-size="13" fill="#93a0b0">${sub}</text>`;
+q+=quad(L,T,'#16222c','KEEP PATCHED','online, still updated','#5fb8e6');
+q+=quad(cx+4,T,'#2b1513','FIX FIRST','online, no more updates','#ff5b4f');
+q+=quad(L,cy+4,'#151c24','LOW','offline, still updated','#93a0b0');
+q+=quad(cx+4,cy+4,'#241f12','PLAN TO REPLACE','offline, no more updates','#f4b443');
+q+=`<text x="${cx}" y="${T+H+30}" text-anchor="middle" font-family="Courier Prime,monospace" font-size="13" fill="#93a0b0">STILL GETS SECURITY UPDATES?   yes  ◀ ─── ▶  no</text>`;
+q+=`<text transform="translate(${L-24} ${cy}) rotate(-90)" text-anchor="middle" font-family="Courier Prime,monospace" font-size="13" fill="#93a0b0">REACHABLE FROM THE INTERNET?   no ◀ ─── ▶ yes</text>`;
+const dots=[[cx+50,T+110,'Fridge system manager',1],[L+90,T+100,'Card payment terminals'],[L+200,T+140,'Store Wi-Fi router'],[cx+120,cy+110,'Old back-office PC'],[L+120,cy+120,'Shelf-label printer']];
+dots.forEach(([x,y,t,hot])=>{q+=`<circle cx="${x}" cy="${y}" r="${hot?11:7}" fill="${hot?'#ff5b4f':'#e8edf2'}"${hot?' stroke="#fff" stroke-width="2"':''}/><text x="${x+(hot?18:14)}" y="${y+5}" font-family="Courier Prime,monospace" font-size="${hot?15:13}" font-weight="${hot?700:400}" fill="${hot?'#ffb3ad':'#e8edf2'}">${t}</text>`;});
+m.innerHTML=q;
+})();
+
+</script>
+</body></html>

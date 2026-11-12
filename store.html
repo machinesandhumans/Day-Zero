@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Day Zero · Inside the store</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Courier+Prime:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<div class="wrap">
+  <nav class="chap"><a href="index.html"><b>1</b>One night</a><a href="store.html" aria-current="page"><b>2</b>Inside the store</a><a href="defense.html"><b>3</b>Damage control</a><a href="avoid.html"><b>4</b>Prevention</a><a href="you.html"><b>5</b>Your part</a></nav>
+  <header>
+    <div class="kicker">Chapter 2 · Inside one store</div>
+    <h1>A fridge is never just a fridge.</h1>
+  </header>
+  <div class="stage scroll"><div id="store" style="min-width:720px"></div></div>
+  <div class="caption">
+    <div aria-live="polite"><div class="stepnum" id="num"></div><h3 id="head"></h3><p id="body"></p></div>
+    <div class="row"><button class="btn ghost" id="prev">◀ Back</button><button class="btn" id="next">Next ▶</button></div>
+  </div>
+  <p class="note">The temperatures on the displays are illustrative. Reports describe the defrost settings being pushed to high temperatures, without giving exact readings.</p>
+  <div class="next"><a href="index.html">◀ One night</a><a href="defense.html">Next: damage control ▶</a></div>
+</div>
+<script src="store.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+$('store').innerHTML=storeSVG();
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const START={c1:-18,c2:3,c3:2}, END={c1:41,c2:47,c3:38};
+const STEPS=[
+ {h:'2 a.m. A supermarket, closed and quiet.',b:'The freezers hold at minus 18. The dairy case and the cold room hold just above zero. Nobody is in the building.'},
+ {h:'Every case has its own controller.',b:'A small box watches the temperature and runs defrost cycles: short bursts of heat that melt ice off the coils. Harmless when it runs for a few minutes.',on:['c1','c2','c3'],call:['lblCtrl']},
+ {h:'They all answer to one system manager.',b:'A box in the back office runs every case in the store. Change a setting there, and it changes on every case at once.',on:['mgr'],wires:['pBus','pD1','pD2','pD3']},
+ {h:'A modem lets repair technicians connect remotely.',b:'A technician can fix a warm freezer at 3 a.m. without driving out. In many stores the system manager behind it was a legacy model that no longer received security updates.',on:['modem','mgr'],wires:['pModem'],call:['lblRemote'],badge:true},
+ {h:'The attackers come in through that door.',b:'From anywhere online, they reach the modem, then the system manager, and change one thing: the defrost settings. The heaters switch on and stay on.',on:['att'],hot:['pNet','pModem','pBus','pD1','pD2','pD3'],badge:true,bad:true,heat:true},
+ {h:'Product is lost. Then fires start.',b:'Fresh and frozen food heats past the point of saving. Heaters built to run for minutes run for hours. Across France, at least 15 fires broke out that night.',on:['att'],hot:['pNet','pModem','pBus','pD1','pD2','pD3'],badge:true,bad:true,heat:true,fire:true},
+];
+let i=0, raf=null;
+function setTemps(t){['c1','c2','c3'].forEach(k=>{const v=Math.round(START[k]+(END[k]-START[k])*t);$(k+'-t').textContent=v+'°';});
+  const s=document.querySelectorAll('#mgr .scr');const v=['c1','c2','c3'].map(k=>Math.round(START[k]+(END[k]-START[k])*t));
+  s[0].textContent='CASE 01 '+String(v[0]).padStart(4)+'°';s[1].textContent='CASE 02 '+String(v[1]).padStart(4)+'°';s[2].textContent='ROOM 03 '+String(v[2]).padStart(4)+'°';}
+function animateTemps(from,to){cancelAnimationFrame(raf);if(reduce){setTemps(to);return;}const t0=performance.now(),d=3000;
+  const f=now=>{const p=Math.min(1,(now-t0)/d);setTemps(from+(to-from)*p);if(p<1)raf=requestAnimationFrame(f);};raf=requestAnimationFrame(f);}
+let heated=0;
+function draw(){
+  const s=STEPS[i];
+  ['att','modem','mgr','c1','c2','c3'].forEach(id=>$(id).classList.toggle('on',(s.on||[]).includes(id)));
+  document.querySelectorAll('.storesvg .wire').forEach(w=>{w.classList.toggle('on',(s.wires||[]).includes(w.id));w.classList.toggle('hot',(s.hot||[]).includes(w.id));});
+  ['lblCtrl','lblRemote'].forEach(id=>$(id).classList.toggle('show',(s.call||[]).includes(id)));
+  $('badge').classList.toggle('show',!!s.badge);
+  ['c1','c2','c3','mgr'].forEach(id=>$(id).classList.toggle('bad',!!s.bad));
+  ['case1','case2','case3'].forEach(id=>$(id).classList.toggle('hot',!!s.heat));
+  $('fire').classList.toggle('show',!!s.fire);
+  const target=s.heat?1:0; if(target!==heated){animateTemps(heated,target);heated=target;}
+  $('num').textContent=`Step ${i+1} of ${STEPS.length}`;$('head').textContent=s.h;$('body').textContent=s.b;
+  $('prev').disabled=i===0;$('next').textContent=i===STEPS.length-1?'↺ Start over':'Next ▶';
+}
+$('next').onclick=()=>{i=i===STEPS.length-1?0:i+1;draw();};
+$('prev').onclick=()=>{if(i>0){i--;draw();}};
+draw();
+})();
+</script>
+</body></html>
