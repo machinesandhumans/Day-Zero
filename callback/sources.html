@@ -41,6 +41,8 @@
 .you{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:center}
 @media (max-width:760px){.you{grid-template-columns:minmax(0,1fr)}}
 .linkedin{background:#f4f2ee;color:#1d2226;border-radius:10px;padding:16px;font-family:var(--body);display:flex;flex-direction:column;gap:6px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.linkedin .lhead{display:flex;gap:12px;align-items:center}
+.linkedin .lhead img{width:72px;height:72px;border-radius:50%;object-fit:cover;object-position:50% 25%}
 .linkedin .nm{font-weight:600;font-size:18px}
 .linkedin .ti{font-size:14px;color:#555}
 .linkedin .post{border-top:1px solid #ddd;padding-top:8px;font-size:14px}
@@ -78,15 +80,15 @@
   <section class="you">
     <div style="display:flex;flex-direction:column;gap:12px">
       <div class="kicker cold">Plot twist</div>
-      <h2>The Exec is the face. You're the target.</h2>
-      <p class="lead">Ryan doesn't call the Exec. He calls whoever can do what he wants: pay an invoice, reset a password, share a file. Your public profile tells him who that is, how new you are, and whether you'd feel awkward saying no.</p>
-      <p class="muted">The perfect target is new, helpful, a little eager to impress, and just announced it on the internet.</p>
+      <h2>The Exec is the face. Jordan is the target.</h2>
+      <p class="lead">Ryan doesn't call the Exec. He calls whoever can do what he wants: add a supplier, release a payment, reset a password. Jordan's public profile tells him exactly who that is, and who her boss is.</p>
+      <p class="muted">The perfect target can move money or open a door, works for someone worth faking, and is proud of her job. That last part is a good thing. It just shouldn't be a map.</p>
     </div>
     <div class="linkedin" aria-label="Example social profile with risky details highlighted">
-      <div class="nm">Jordan P.</div>
-      <div class="ti"><mark>Accounts Payable Specialist</mark> · <mark>Started 3 weeks ago</mark></div>
-      <div class="post">So excited to join the finance team! Huge thanks to <mark>my new manager, the VP of Finance</mark>, for the warm welcome. Can't wait to <mark>help close our big Q4 deal</mark> 🎉</div>
-      <div class="note">→ Who pays invoices. Too new to know the process. Name of the boss to fake. A pretext, ready-made.</div>
+      <div class="lhead"><img src="img/jordan-summit.jpg" alt="Jordan smiling at the supplier summit, holding her badge"><div><div class="nm">Jordan Reyes</div>
+      <div class="ti"><mark>Procurement Lead</mark> at <mark>Rhythmatic</mark> · AFib monitoring</div></div></div>
+      <div class="post">Great day at the supplier summit with <mark>my boss, our Exec</mark> 🙌 Busy quarter ahead: <mark>onboarding new component suppliers</mark> as we scale up the monitor. <mark>DMs open for vendors!</mark></div>
+      <div class="note">→ Who can add a supplier. Whose face to borrow. A cover story (new suppliers) and an open door for messages.</div>
     </div>
   </section>
 
